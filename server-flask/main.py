@@ -10,8 +10,22 @@ def hello_world():
 
 @app.route('/api/users')
 def get_users():
-    return{
-        'users' : ['Alice', 'Dylan', 'Danger'] 
+    return {
+        'users' : [
+            {
+                'id': 1,
+                'name': 'Alice' 
+            },
+            {
+                'id':2,
+                'name' : 'Bob'
+            },
+            {
+               
+               'id':3,
+               'name': 'Danger' 
+            }
+        ]  
     }
 
 if __name__== '__main__':
