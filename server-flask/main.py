@@ -25,8 +25,6 @@ def get_users():
                'id':3,
                'name': 'Danger' 
             }
-        ]  
+            ]  
     }
 
-if __name__== '__main__':
-    app.run(debug=True)
