@@ -1,13 +1,13 @@
-from flask import request, jsonify
+from flask import Blueprint, request, jsonify
 from utils.db import db
-from models import usuarios
-from app import app
-from _json import jsonify
+from models.modelo_usuarios import Usuario
 from werkzeug.security import generate_password_hash
 import uuid
 
+registro_bp = Blueprint("registro", __name__, url_prefix="/api")
 
-@app.route("/api/registro", methods=["POST"])
+
+@registro_bp.route("/registro", methods=["POST"])
 def registro():
     """Registro de usuario - Devuelve JSON"""
     try:
@@ -23,12 +23,12 @@ def registro():
             return jsonify({"error": "Datos incompletos"}), 400
 
         # Verificar si el usuario ya existe
-        usuario_existente = usuarios.query.filter_by(correo=data["correo"]).first()
+        usuario_existente = Usuario.query.filter_by(correo=data["correo"]).first()
         if usuario_existente:
             return jsonify({"error": "El correo ya está registrado"}), 409
 
         # Crear nuevo usuario
-        nuevo_usuario = usuarios(
+        nuevo_usuario = Usuario(
             id_usu=str(uuid.uuid4())[:10],
             nombre=data["nombre"],
             correo=data["correo"],
