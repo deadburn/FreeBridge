@@ -1,37 +1,48 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from models.modelo_usuarios import Usuario
 from werkzeug.security import check_password_hash
 import jwt
 from datetime import datetime, timedelta
-import app
 
-login_bp = Blueprint("login", __name__, url_prefix="/api")
+login_bp = Blueprint("login", __name__)
 
 
-@login_bp.route("/login", methods=["POST"])
+@login_bp.route("/api/login", methods=["POST", "OPTIONS"])
 def login():
     """Inicio de sesión - Devuelve JWT token"""
+    if request.method == "OPTIONS":
+        return "", 200
+
     try:
+        print("Iniciando proceso de login")
         data = request.get_json()
+        print("Datos recibidos:", data)
 
-        if not data or not data.get("correo") or not data.get("contraseña"):
-            return jsonify({"error": "Correo y contraseña requeridos"}), 400
+        if not data:
+            return jsonify({"error": "No se recibieron datos"}), 400
 
-        usuario = Usuario.query.filter_by(correo=data["correo"]).first()
+        correo = data.get("correo")
+        contraseña = data.get("contraseña")
 
-        if not usuario or not check_password_hash(
-            usuario.contraseña, data["contraseña"]
-        ):
-            return jsonify({"error": "Credenciales incorrectas"}), 401
+        if not correo or not contraseña:
+            return jsonify({"error": "Correo y contraseña son requeridos"}), 400
 
-        # Generar JWT token
+        # Buscar usuario y loggear el resultado
+        usuario = Usuario.query.filter_by(correo=correo).first()
+        print("Usuario encontrado:", usuario)
+
+        if not usuario:
+            return jsonify({"error": "Usuario no encontrado"}), 401
+
+        if not check_password_hash(usuario.contraseña, contraseña):
+            return jsonify({"error": "Contraseña incorrecta"}), 401  # Generar JWT token
         token = jwt.encode(
             {
                 "user_id": usuario.id_usu,
                 "rol": usuario.rol,
                 "exp": datetime.utcnow() + timedelta(hours=24),
             },
-            app.config["SECRET_KEY"],
+            current_app.config["SECRET_KEY"],
             algorithm="HS256",
         )
 

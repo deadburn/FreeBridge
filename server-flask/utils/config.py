@@ -24,3 +24,6 @@ class Config:
 
     # Configuración adicional
     SQLALCHEMY_ECHO = True
+
+    # Clave secreta para JWT
+    SECRET_KEY = os.environ.get("SECRET_KEY", "tu_clave_secreta_temporal")

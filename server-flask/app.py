@@ -22,16 +22,26 @@ CORS(
     app,
     resources={
         r"/api/*": {
-            "origins": ["http://localhost:5173"],  # URL de React
+            "origins": ["http://localhost:5173"],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
+            "expose_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True,
+            "allow_credentials": True,
         }
     },
 )
 
+# Importar todos los modelos
+from models import Usuario, Empresa, Ciudad, Freelancer, Vacante, Postulacion
+
 db.init_app(app)
 
 with app.app_context():
+    # Eliminar todas las tablas existentes y crear nuevas
+    db.drop_all()
+    db.create_all()
+    print("Database tables created successfully")
 
     ################# REGISTRO DE BLUEPRINTS #####################
     # Autenticación

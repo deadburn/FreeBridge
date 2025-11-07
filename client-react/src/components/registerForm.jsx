@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { registerUser } from "../api/authApi.js";
 
 export default function RegisterForm() {
@@ -6,10 +6,35 @@ export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const ROLES = {
+    FREELANCER: "freelancer",
+    EMPRESA: "empresa",
+  };
+  const [rol, setRol] = useState(ROLES.FREELANCER);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await registerUser({ nombre, email, password });
-    alert(res.message || "Registro exitoso");
+    try {
+      console.log("Form data being sent:", {
+        nombre,
+        email,
+        password,
+        rol,
+      });
+
+      const response = await registerUser({
+        nombre,
+        email,
+        password,
+        rol,
+      });
+
+      console.log("Registration successful:", response);
+      // ...handle success...
+    } catch (error) {
+      console.error("Registration failed:", error);
+      // ...handle error...
+    }
   };
 
   return (
@@ -36,6 +61,26 @@ export default function RegisterForm() {
         onChange={(e) => setPassword(e.target.value)}
         required
       />
+      <label>
+        <input
+          type="radio"
+          name="rol"
+          value={ROLES.FREELANCER}
+          checked={rol === ROLES.FREELANCER}
+          onChange={() => setRol(ROLES.FREELANCER)}
+        />
+        Freelancer
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="rol"
+          value={ROLES.EMPRESA}
+          checked={rol === ROLES.EMPRESA}
+          onChange={() => setRol(ROLES.EMPRESA)}
+        />
+        Empresa
+      </label>
       <button type="submit">Registrar</button>
     </form>
   );

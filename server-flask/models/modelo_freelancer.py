@@ -1,19 +1,23 @@
 from utils.db import db
-from sqlalchemy import Column, String, ForeignKey, Text
 
 
 class Freelancer(db.Model):
-    __tablename__ = "freelancer"
+    __tablename__ = "FREELANCER"
 
-    id_free = Column(String(11), primary_key=True)
-    id_usu = Column(String(11), ForeignKey("usuario.id_usu"), nullable=False)
-    id_ciud = Column(String(11), ForeignKey("ciudad.id_ciud"), nullable=False)
-    profesion = Column(String(50), nullable=False)
-    portafolio_URL = Column(String(255))
-    experiencia = Column(Text)
+    id_free = db.Column(db.String(11), primary_key=True)
+    id_usu = db.Column(db.String(11), db.ForeignKey("USUARIO.id_usu"), nullable=False)
+    id_ciud = db.Column(db.String(11), db.ForeignKey("CIUDAD.id_ciud"), nullable=False)
+    profesion = db.Column(db.String(50), nullable=False)
+    portafolio_URL = db.Column(db.String(255))
+    experiencia = db.Column(db.Text)
 
     # Relaciones
-    postulaciones = db.relationship("postulacion", backref="freelancer", lazy=True)
+    postulaciones = db.relationship(
+        "Postulacion",
+        backref=db.backref("freelancer", lazy=True),
+        lazy=True,
+        primaryjoin="Freelancer.id_free == Postulacion.id_free",
+    )
 
     def __repr__(self):
         return f"<freelancer {self.profesion}>"

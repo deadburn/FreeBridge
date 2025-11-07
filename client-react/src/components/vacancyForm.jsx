@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { crearVacante } from "../api/vacancyApi.js";
 

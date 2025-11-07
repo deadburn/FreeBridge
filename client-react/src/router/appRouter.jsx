@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
+import { Routes, Route, Router } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Home from "../pages/Home.jsx";
 import Login from "../pages/Login.jsx";
@@ -8,7 +9,7 @@ import Profile from "../pages/Profile.jsx";
 
 export default function AppRouter() {
   return (
-    <Router>
+    <>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -17,6 +18,6 @@ export default function AppRouter() {
         <Route path="/vacantes" element={<Vacancies />} />
         <Route path="/perfil" element={<Profile />} />
       </Routes>
-    </Router>
+    </>
   );
 }

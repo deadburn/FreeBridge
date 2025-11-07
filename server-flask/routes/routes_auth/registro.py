@@ -4,28 +4,31 @@ from models.modelo_usuarios import Usuario
 from werkzeug.security import generate_password_hash
 import uuid
 
-registro_bp = Blueprint("registro", __name__, url_prefix="/api")
+registro_bp = Blueprint("registro", __name__)
 
 
-@registro_bp.route("/registro", methods=["POST"])
+@registro_bp.route("/api/registro", methods=["POST", "OPTIONS"])
 def registro():
+    if request.method == "OPTIONS":
+        return "", 200
+
     """Registro de usuario - Devuelve JSON"""
     try:
+        print("Starting registration process")
+        print("Request Headers:", dict(request.headers))
+        print("Request Method:", request.method)
+
+        if not request.is_json:
+            print("Request is not JSON")
+            return jsonify({"error": "Content-Type must be application/json"}), 400
+
         data = request.get_json()
+        print("Received data:", data)  # Debug print
 
-        # Validar datos
-        if (
-            not data
-            or not data.get("nombre")
-            or not data.get("correo")
-            or not data.get("contraseña")
-        ):
-            return jsonify({"error": "Datos incompletos"}), 400
-
-        # Verificar si el usuario ya existe
-        usuario_existente = Usuario.query.filter_by(correo=data["correo"]).first()
-        if usuario_existente:
-            return jsonify({"error": "El correo ya está registrado"}), 409
+        # Validate data
+        if not data or not all(k in data for k in ["nombre", "correo", "contraseña"]):
+            print("Missing required fields")
+            return jsonify({"error": "Missing required fields"}), 400
 
         # Crear nuevo usuario
         nuevo_usuario = Usuario(
@@ -57,4 +60,5 @@ def registro():
 
     except Exception as e:
         db.session.rollback()
+        print("Error in registration:", str(e))  # Debug print
         return jsonify({"error": str(e)}), 500

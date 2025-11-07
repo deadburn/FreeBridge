@@ -1,0 +1,34 @@
+.navbar {
+  margin-top: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+
+  background-color: #c33d3d;
+  overflow: hidden;
+}
+
+/* Estilo para todos los enlaces dentro del navbar */
+.navbar a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+}
+
+.navbar a:hover {
+  background-color: #e63434;
+  border-radius: 4px;
+}
+
+/* Estilo específico para el botón de inicio */
+.BotonInicio {
+  font-weight: bold;
+}
+
+.BotonInicio a {
+  color: white;
+  text-decoration: none;
+}

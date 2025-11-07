@@ -1,3 +1,4 @@
+import React from "react";
 export default function VacancyCard({ vacante }) {
   return (
     <div className="border rounded-lg p-3 mb-2 shadow">

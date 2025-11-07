@@ -1,8 +1,20 @@
+import React from "react";
+import styles from "./Home.module.css";
+
 export default function Home() {
   return (
-    <div>
+    <div className={styles.home}>
+      <title>FreeBridge - Conecta talento con oportunidades</title>
+
+      <div className={styles.logo_container}>
+        <img src="/src/assets/freebridge.svg" alt="FreeBridge Logo" />
+      </div>
+
       <h1>Bienvenido a FreeBridge</h1>
-      <p>Conecta talento con oportunidades.</p>
+      <span>
+        Haz parte de la comunidad de Freelancers mas grande de Colombia
+      </span>
+      <br />
     </div>
   );
 }
