@@ -4,10 +4,14 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f33535;
+  background-color: #ec8f8f;
 }
 
 .logo_container {
   margin-bottom: 20px;
   align-items: center;
+}
+
+.texto {
+  color: rgb(183, 113, 22);
 }

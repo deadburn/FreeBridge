@@ -1,10 +1,12 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/authApi.js";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,13 +21,11 @@ export default function LoginForm() {
         localStorage.setItem("userId", res.usuario.id);
       }
 
-      // Aquí puedes redirigir según el rol
+      // Redirigir según el rol
       if (res.usuario.rol === "Empresa") {
-        // navigate('/dashboard-empresa');
-        alert("Bienvenido al panel de Empresa");
+        navigate("/company-dashboard");
       } else {
-        // navigate('/dashboard-freelancer');
-        alert("Bienvenido al panel de Freelancer");
+        navigate("/freelancer-dashboard");
       }
     } catch (error) {
       console.error("Error en login:", error);

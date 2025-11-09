@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+import os
 from flask_cors import CORS
 from utils.db import db
 from utils.config import Config
@@ -12,6 +13,8 @@ from routes.routes_post.ver_postulacion import ver_postulacion_bp
 from routes.routes_vacancy.crear_vacante import crear_vacante_bp
 from routes.routes_vacancy.vacantes import vacantes_bp
 from routes.routes_vacancy.ver_vacante import ver_vacante_bp
+from routes.ciudades import ciudades_bp
+from routes.routes_empresa.perfil_empresa import perfil_empresa_bp
 
 
 app = Flask(__name__)
@@ -38,10 +41,19 @@ from models import Usuario, Empresa, Ciudad, Freelancer, Vacante, Postulacion
 db.init_app(app)
 
 with app.app_context():
-    # Eliminar todas las tablas existentes y crear nuevas
-    db.drop_all()
-    db.create_all()
-    print("Database tables created successfully")
+    # Controlar recreación de la DB con la variable de entorno RESET_DB
+    # Si RESET_DB=1, la base de datos se eliminará y se volverá a crear (útil en dev).
+    # Si no está activa, solo se ejecuta create_all() sin borrar datos existentes.
+    reset_db = os.environ.get("RESET_DB", "0") == "1"
+    if reset_db:
+        # Eliminar todas las tablas existentes y crear nuevas
+        db.drop_all()
+        db.create_all()
+        print("Database dropped and recreated (RESET_DB=1)")
+    else:
+        # Crear tablas que falten sin borrar datos existentes
+        db.create_all()
+        print("Database tables ensured (no drop). Set RESET_DB=1 to force recreate")
 
     ################# REGISTRO DE BLUEPRINTS #####################
     # Autenticación
@@ -51,6 +63,9 @@ with app.app_context():
     # Perfil
     app.register_blueprint(perfil_bp)
 
+    # Ciudades
+    app.register_blueprint(ciudades_bp)
+
     # Postulaciones
     app.register_blueprint(postulacion_bp)
     app.register_blueprint(ver_postulacion_bp)
@@ -59,6 +74,9 @@ with app.app_context():
     app.register_blueprint(crear_vacante_bp)
     app.register_blueprint(vacantes_bp)
     app.register_blueprint(ver_vacante_bp)
+
+    # Empresa
+    app.register_blueprint(perfil_empresa_bp)
 
 
 ########## MANEJO DE ERRORES #############
