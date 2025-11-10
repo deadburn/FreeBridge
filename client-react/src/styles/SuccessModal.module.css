@@ -1,0 +1,182 @@
+/* SuccessModal.module.css */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s ease;
+  position: relative;
+}
+
+.iconContainer {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.checkIcon {
+  width: 80px;
+  height: 80px;
+  animation: scaleIn 0.5s ease 0.2s both;
+}
+
+.checkCircle {
+  stroke: #16a085;
+  stroke-width: 2;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: strokeCircle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkPath {
+  stroke: #16a085;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: strokeCheck 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
+}
+
+.title {
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  animation: fadeInUp 0.5s ease 0.3s both;
+}
+
+.message {
+  color: #34495e;
+  font-size: 1.1rem;
+  margin: 0 0 0.75rem 0;
+  animation: fadeInUp 0.5s ease 0.4s both;
+}
+
+.message strong {
+  color: #16a085;
+  font-weight: 600;
+}
+
+.submessage {
+  color: #7f8c8d;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 0 2rem 0;
+  animation: fadeInUp 0.5s ease 0.5s both;
+}
+
+.closeButton {
+  background: linear-gradient(135deg, #16a085 0%, #16685a 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 2.5rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(22, 160, 133, 0.3);
+  animation: fadeInUp 0.5s ease 0.6s both;
+}
+
+.closeButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(22, 160, 133, 0.4);
+}
+
+.closeButton:active {
+  transform: translateY(0);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes strokeCircle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes strokeCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal {
+    padding: 2.5rem 1.5rem;
+    max-width: 90%;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .message {
+    font-size: 1rem;
+  }
+
+  .checkIcon {
+    width: 60px;
+    height: 60px;
+  }
+}

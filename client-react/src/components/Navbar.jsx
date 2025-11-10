@@ -1,70 +1,106 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import styles from "./Navbar.module.css";
+/**
+ * Navbar.jsx
+ * Componente de barra de navegación
+ * Solo maneja UI - La lógica de autenticación está en AuthContext
+ * Muestra versión compacta (solo iconos) en páginas que no son Home
+ */
+
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import styles from "../styles/Navbar.module.css";
+import {
+  FaBriefcase,
+  FaUser,
+  FaSignInAlt,
+  FaSignOutAlt,
+  FaUserPlus,
+} from "react-icons/fa";
 
 export default function Navbar() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState(null);
-  const navigate = useNavigate();
+  // Obtiene estado y métodos del contexto de autenticación
+  const { isAuthenticated, logout, navigateToProfile } = useAuth();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("userRole");
-    setIsAuthenticated(!!token);
-    setUserRole(role);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userName");
-    setIsAuthenticated(false);
-    setUserRole(null);
-    navigate("/");
-  };
-
-  const handleProfileClick = () => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
-
-    switch (userRole) {
-      case "Empresa":
-        navigate("/company-dashboard");
-        break;
-      case "Freelancer":
-        navigate("/freelancer-dashboard");
-        break;
-      default:
-        navigate("/perfil");
-    }
-  };
+  // Obtiene la ruta actual para determinar si mostrar navbar compacto
+  const location = useLocation();
+  const isHomePage = location.pathname === "/" || location.pathname === "/home";
 
   return (
-    <nav className={styles.navbar}>
-      <div className={styles.BotonInicio}>
-        <Link to="/">Inicio</Link>
+    <nav
+      className={`${styles.navbar} ${!isHomePage ? styles.navbarCompact : ""}`}
+    >
+      {/* Logo FreeBridge con imagen SVG */}
+      <div className={styles.logo}>
+        <Link to="/" title="FreeBridge">
+          <img src="/src/assets/freebridge.svg" alt="FreeBridge Logo" />
+        </Link>
       </div>
 
-      <Link to="/vacantes">Vacantes</Link>
+      {/* Enlaces de navegación */}
+      <div className={styles.navLinks}>
+        <Link to="/vacantes" title="Vacantes">
+          {isHomePage ? (
+            "Vacantes"
+          ) : (
+            <span className={styles.icon}>
+              <FaBriefcase />
+            </span>
+          )}
+        </Link>
 
-      {!isAuthenticated ? (
-        <>
-          <Link to="/login">Iniciar Sesión</Link>
-          <Link to="/register">Registrarse</Link>
-        </>
-      ) : (
-        <>
-          <button onClick={handleProfileClick} className={styles.navLink}>
-            Perfil
-          </button>
-          <button onClick={handleLogout} className={styles.navLink}>
-            Cerrar Sesión
-          </button>
-        </>
-      )}
+        {/* Renderizado condicional según estado de autenticación */}
+        {!isAuthenticated ? (
+          <>
+            <Link to="/login" title="Iniciar Sesión">
+              {isHomePage ? (
+                "Iniciar Sesión"
+              ) : (
+                <span className={styles.icon}>
+                  <FaSignInAlt />
+                </span>
+              )}
+            </Link>
+            <Link to="/register" title="Registrarse">
+              {isHomePage ? (
+                "Registrarse"
+              ) : (
+                <span className={styles.icon}>
+                  <FaUserPlus />
+                </span>
+              )}
+            </Link>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={navigateToProfile}
+              className={styles.navLink}
+              title="Perfil"
+            >
+              {isHomePage ? (
+                "Perfil"
+              ) : (
+                <span className={styles.icon}>
+                  <FaUser />
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => logout(true)}
+              className={styles.navLink}
+              title="Cerrar Sesión"
+            >
+              {isHomePage ? (
+                "Cerrar Sesión"
+              ) : (
+                <span className={styles.icon}>
+                  <FaSignOutAlt />
+                </span>
+              )}
+            </button>
+          </>
+        )}
+      </div>
     </nav>
   );
 }

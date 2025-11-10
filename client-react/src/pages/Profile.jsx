@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { getProfile } from "../api/profileApi.js";
 
 export default function Profile() {
@@ -7,10 +8,13 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Usar el contexto de autenticación
+  const { isAuthenticated } = useAuth();
+
   useEffect(() => {
     const load = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
+      // Verificar autenticación usando el contexto
+      if (!isAuthenticated) {
         setError("Debes iniciar sesión para ver esta página.");
         setLoading(false);
         return;
@@ -29,7 +33,7 @@ export default function Profile() {
     };
 
     load();
-  }, []);
+  }, [isAuthenticated]);
 
   if (loading) return <p>Cargando perfil...</p>;
 

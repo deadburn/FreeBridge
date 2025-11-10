@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getToken } from "../utils/sessionManager";
 
 const api = axios.create({
   baseURL: "http://localhost:5000",
@@ -11,7 +12,8 @@ const api = axios.create({
 //Interceptor para agregar el token automáticamente
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    // Usar getToken del sessionManager en lugar de localStorage directo
+    const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

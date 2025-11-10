@@ -1,0 +1,175 @@
+/* Contenedor principal de la página */
+.home {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+/* ===== HERO SECTION ===== */
+/* Sección principal con fondo degradado cyan y marca de agua */
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  /* Fondo degradado de cyan claro a cyan más oscuro */
+  background: linear-gradient(180deg, #b8f2e6 0%, #7dd3c0 100%);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Marca de agua con patrón repetitivo del logo */
+.heroSection::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Patrón repetitivo con el SVG del logo */
+  background-image: url("/src/assets/freebridge.svg");
+  background-size: 150px 150px; /* Tamaño de cada logo */
+  background-repeat: repeat;
+  opacity: 0.08; /* Muy transparente para efecto de marca de agua */
+  pointer-events: none; /* No interfiere con clics */
+  z-index: 0;
+  /* Rotar ligeramente para efecto diagonal */
+  transform: rotate(-15deg) scale(1.2);
+}
+
+/* Título principal de la hero section */
+.heroTitle {
+  font-size: 3rem;
+  color: #16685a;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  max-width: 800px;
+  position: relative; /* Para que esté por encima de la marca de agua */
+  z-index: 1;
+}
+
+/* Subtítulo descriptivo debajo del título */
+.heroSubtitle {
+  font-size: 1.25rem;
+  color: #2d5a52;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  line-height: 1.6;
+  position: relative; /* Para que esté por encima de la marca de agua */
+  z-index: 1;
+}
+
+/* Botón de llamada a la acción (CTA) */
+.ctaButton {
+  background-color: #16a085;
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative; /* Para que esté por encima de la marca de agua */
+  z-index: 1;
+}
+
+/* Efecto hover en el botón CTA */
+.ctaButton:hover {
+  background-color: #138f75;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== CATEGORIES SECTION ===== */
+/* Sección de exploración de categorías */
+.categoriesSection {
+  padding: 4rem 3rem;
+  background-color: #faf9f8;
+  text-align: center;
+}
+
+/* Título de la sección de categorías */
+.categoriesTitle {
+  font-size: 2.5rem;
+  color: #16685a;
+  margin-bottom: 3rem;
+  font-weight: 700;
+}
+
+/* Grid responsivo para las tarjetas de categorías */
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Tarjeta individual de categoría */
+.categoryCard {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+/* Efecto hover en las tarjetas de categoría */
+.categoryCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Icono de la categoría */
+.categoryIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* Título de cada categoría */
+.categoryCard h3 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+/* Descripción de cada categoría */
+.categoryCard p {
+  font-size: 1rem;
+  color: #7f8c8d;
+  line-height: 1.5;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+/* Ajustes para tablets y pantallas medianas */
+@media (max-width: 768px) {
+  /* Hero section en dispositivos móviles */
+  .heroSection {
+    padding: 4rem 1.5rem;
+  }
+
+  /* Título más pequeño en móviles */
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  /* Subtítulo más pequeño en móviles */
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+
+  /* Sección de categorías con padding reducido */
+  .categoriesSection {
+    padding: 3rem 1.5rem;
+  }
+
+  /* Título de categorías más pequeño en móviles */
+  .categoriesTitle {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,135 @@
+/* Card de vacante */
+.card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border-color: #16a085;
+}
+
+/* Header de la card */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+/* Título de la vacante */
+.title {
+  font-size: 1.4rem;
+  color: #16685a;
+  font-weight: 700;
+  margin: 0;
+  flex: 1;
+}
+
+/* Badge de estado */
+.badge {
+  background: linear-gradient(135deg, #16a085 0%, #16685a 100%);
+  color: white;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Descripción */
+.description {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0 0 1.25rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Footer de la card */
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+  gap: 1rem;
+}
+
+/* Nombre de la empresa */
+.company {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  font-weight: 500;
+  flex: 1;
+}
+
+/* Botón de postularse */
+.applyButton {
+  background: linear-gradient(135deg, #16a085 0%, #16685a 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(22, 160, 133, 0.2);
+}
+
+.applyButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(22, 160, 133, 0.3);
+}
+
+.applyButton:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    padding: 1.25rem;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 1.2rem;
+  }
+
+  .badge {
+    align-self: flex-start;
+  }
+
+  .cardFooter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .applyButton {
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .company {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+}

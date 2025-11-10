@@ -17,9 +17,9 @@ export const saveCompanyProfile = async (companyData) => {
   }
 };
 
-export const getCompanyProfile = async () => {
+export const getCompanyProfile = async (userId) => {
   try {
-    const response = await axiosInstance.get("/api/empresa/perfil");
+    const response = await axiosInstance.get(`/api/empresa/perfil/${userId}`);
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {

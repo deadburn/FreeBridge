@@ -32,9 +32,8 @@ export const loginUser = async (credentials) => {
     const res = await api.post("/api/login", data);
     console.log("Login response:", res.data);
 
-    if (res.data.token) {
-      localStorage.setItem("token", res.data.token);
-    }
+    // Nota: El token ahora se guarda desde loginForm.jsx usando el método login() del AuthContext
+    // No es necesario guardarlo aquí directamente en localStorage
     return res.data;
   } catch (error) {
     console.error("Login error:", error.response?.data || error.message);

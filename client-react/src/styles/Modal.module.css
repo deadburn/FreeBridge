@@ -1,0 +1,218 @@
+/* Modal.module.css - Estilos para ventana emergente */
+
+/* Overlay oscuro que cubre toda la pantalla */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+/* Animación de aparición del overlay */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Contenedor principal del modal */
+.modalContent {
+  background-color: white;
+  border-radius: 15px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+  position: relative;
+}
+
+/* Animación de deslizamiento hacia arriba */
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Header del modal con título y botón cerrar */
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #e0e0e0;
+  background-color: #f8f9fa;
+  border-radius: 15px 15px 0 0;
+}
+
+/* Título del modal */
+.modalHeader h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #16685a;
+  font-weight: 700;
+}
+
+/* Botón de cerrar (X) */
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #7f8c8d;
+  cursor: pointer;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+/* Efecto hover en botón cerrar */
+.closeButton:hover {
+  background-color: #e74c3c;
+  color: white;
+  transform: rotate(90deg);
+}
+
+/* Cuerpo del modal con scroll */
+.modalBody {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+  line-height: 1.7;
+  color: #2c3e50;
+}
+
+/* Estilos para el contenido dentro del modal */
+.modalBody h3 {
+  color: #16685a;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.3rem;
+}
+
+.modalBody p {
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+.modalBody ul {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.modalBody li {
+  margin-bottom: 0.5rem;
+}
+
+/* Scrollbar personalizado para el modal */
+.modalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modalBody::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  background: #16a085;
+  border-radius: 10px;
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+  background: #138f75;
+}
+
+/* Footer del modal con botón de aceptar */
+.modalFooter {
+  padding: 1.5rem 2rem;
+  border-top: 2px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #f8f9fa;
+  border-radius: 0 0 15px 15px;
+}
+
+/* Botón de aceptar/cerrar */
+.acceptButton {
+  background-color: #16a085;
+  color: white;
+  border: none;
+  padding: 0.875rem 2.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Efecto hover en botón aceptar */
+.acceptButton:hover {
+  background-color: #138f75;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Efecto active en botón */
+.acceptButton:active {
+  transform: translateY(0);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  /* Modal ocupa casi toda la pantalla en móviles */
+  .modalContent {
+    max-width: 95%;
+    max-height: 90vh;
+    margin: 1rem;
+  }
+
+  /* Header más compacto */
+  .modalHeader {
+    padding: 1rem 1.5rem;
+  }
+
+  .modalHeader h2 {
+    font-size: 1.4rem;
+  }
+
+  /* Cuerpo más compacto */
+  .modalBody {
+    padding: 1.5rem;
+  }
+
+  /* Footer más compacto */
+  .modalFooter {
+    padding: 1rem 1.5rem;
+  }
+
+  /* Botón más pequeño */
+  .acceptButton {
+    padding: 0.75rem 2rem;
+    font-size: 0.95rem;
+  }
+}
