@@ -15,7 +15,7 @@ def detalle_vacante(id_vac):
 
         resultado = {
             "id": vacante.id_vac,
-            "nombre": vacante.nombre_vacante,
+            "nombre": vacante.nomb_vacante,
             "descripcion": vacante.descripcion,
             "requisitos": vacante.requisitos,
             "salario": float(vacante.salario) if vacante.salario else None,
@@ -28,7 +28,7 @@ def detalle_vacante(id_vac):
             "empresa": (
                 {
                     "id": vacante.empresa.id_emp,
-                    "nombre": vacante.empresa.nomb_emp,
+                    "nombre": vacante.empresa.usuario.nombre,
                     "tamaño": vacante.empresa.tamaño,
                 }
                 if vacante.empresa

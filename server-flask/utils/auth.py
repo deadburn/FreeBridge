@@ -1,5 +1,4 @@
-from flask import request, jsonify
-import app
+from flask import request, jsonify, current_app
 import jwt
 from models.modelo_usuarios import Usuario
 from functools import wraps
@@ -20,7 +19,9 @@ def token_required(f):
             if token.startswith("Bearer "):
                 token = token[7:]
 
-            data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
+            data = jwt.decode(
+                token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
+            )
             current_user = Usuario.query.get(data["user_id"])
 
             if not current_user:

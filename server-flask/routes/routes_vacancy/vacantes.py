@@ -14,7 +14,7 @@ def listar_vacantes():
         resultado = [
             {
                 "id": v.id_vac,
-                "nombre": v.nombre_vacante,
+                "nombre": v.nomb_vacante,
                 "descripcion": v.descripcion,
                 "requisitos": v.requisitos,
                 "salario": float(v.salario) if v.salario else None,
@@ -23,7 +23,7 @@ def listar_vacantes():
                 ),
                 "estado": v.estado_vac,
                 "empresa": (
-                    {"id": v.empresa.id_emp, "nombre": v.empresa.nomb_emp}
+                    {"id": v.empresa.id_emp, "nombre": v.empresa.usuario.nombre}
                     if v.empresa
                     else None
                 ),

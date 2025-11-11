@@ -25,7 +25,7 @@ def crear_vacante(current_user):
         nueva_vacante = Vacante(
             id_vac=str(uuid.uuid4())[:11],
             id_emp=empresa.id_emp,
-            nombre_vacante=data["nombre"],
+            nomb_vacante=data["nombre"],
             descripcion=data["descripcion"],
             requisitos=data["requisitos"],
             salario=data.get("salario"),
@@ -41,7 +41,7 @@ def crear_vacante(current_user):
                     "mensaje": "Vacante creada exitosamente",
                     "vacante": {
                         "id": nueva_vacante.id_vac,
-                        "nombre": nueva_vacante.nombre_vacante,
+                        "nombre": nueva_vacante.nomb_vacante,
                     },
                 }
             ),

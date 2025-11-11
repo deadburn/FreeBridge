@@ -1,6 +1,6 @@
 import React from "react";
 import VacancyList from "../components/VacancyList.jsx";
-import VacancyForm from "../components/vacancyForm.jsx";
+import VacancyForm from "../components/VacancyForm.jsx";
 
 export default function Vacancies() {
   return (

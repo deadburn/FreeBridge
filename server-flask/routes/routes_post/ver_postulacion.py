@@ -30,7 +30,9 @@ def mis_postulaciones(current_user):
                         "id": p.vacante.id_vac,
                         "nombre": p.vacante.nombre_vacante,
                         "empresa": (
-                            p.vacante.empresa.nomb_emp if p.vacante.empresa else None
+                            p.vacante.empresa.usuario.nombre
+                            if p.vacante.empresa
+                            else None
                         ),
                     }
                     if p.vacante

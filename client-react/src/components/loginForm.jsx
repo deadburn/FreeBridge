@@ -35,7 +35,7 @@ export default function LoginForm() {
         if (res.usuario.rol === "Empresa") {
           navigate("/company-dashboard");
         } else {
-          navigate("/freelancer-dashboard");
+          navigate("/freelance-dashboard");
         }
       }
     } catch (error) {

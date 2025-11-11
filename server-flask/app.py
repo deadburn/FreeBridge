@@ -8,6 +8,7 @@ from utils.config import Config
 from routes.routes_auth.login import login_bp
 from routes.routes_auth.registro import registro_bp
 from routes.routes_perfil.ver_perfil import perfil_bp
+from routes.routes_perfil.perfil_freelancer import perfil_freelancer_bp
 from routes.routes_post.postulacion import postulacion_bp
 from routes.routes_post.ver_postulacion import ver_postulacion_bp
 from routes.routes_vacancy.crear_vacante import crear_vacante_bp
@@ -62,6 +63,7 @@ with app.app_context():
 
     # Perfil
     app.register_blueprint(perfil_bp)
+    app.register_blueprint(perfil_freelancer_bp)
 
     # Ciudades
     app.register_blueprint(ciudades_bp)

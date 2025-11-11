@@ -1,12 +1,14 @@
-/**
- * SuccessModal.jsx
- * Modal de confirmación para registro exitoso
- */
-
 import React from "react";
 import styles from "../styles/SuccessModal.module.css";
 
-export default function SuccessModal({ isOpen, onClose, userName }) {
+export default function SuccessModal({
+  isOpen,
+  onClose,
+  userName,
+  title = "¡Registro Exitoso!",
+  message = "",
+  submessage = "Tu cuenta ha sido creada correctamente. Ahora puedes iniciar sesión y comenzar a usar FreeBridge.",
+}) {
   if (!isOpen) return null;
 
   return (
@@ -33,16 +35,21 @@ export default function SuccessModal({ isOpen, onClose, userName }) {
           </svg>
         </div>
 
-        <h2 className={styles.title}>¡Registro Exitoso!</h2>
+        <h2 className={styles.title}>{title}</h2>
 
         <p className={styles.message}>
-          Bienvenido/a, <strong>{userName}</strong>
+          {message ? (
+            <>
+              <strong>{userName}</strong> {message}
+            </>
+          ) : (
+            <>
+              Bienvenido/a, <strong>{userName}</strong>
+            </>
+          )}
         </p>
 
-        <p className={styles.submessage}>
-          Tu cuenta ha sido creada correctamente. Ahora puedes iniciar sesión y
-          comenzar a usar FreeBridge.
-        </p>
+        <p className={styles.submessage}>{submessage}</p>
 
         <button className={styles.closeButton} onClick={onClose}>
           Continuar

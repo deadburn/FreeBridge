@@ -15,6 +15,38 @@
   border-color: #16a085;
 }
 
+/* Card clickable - para cuando se puede hacer clic en toda la card */
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  border-color: #16a085;
+}
+
+/* Variantes de diseño */
+.compact {
+  padding: 1rem;
+}
+
+.compact .title {
+  font-size: 1.2rem;
+}
+
+.compact .description {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.detailed {
+  padding: 2rem;
+}
+
+.detailed .description {
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+}
+
 /* Header de la card */
 .cardHeader {
   display: flex;
@@ -35,13 +67,21 @@
 
 /* Badge de estado */
 .badge {
-  background: linear-gradient(135deg, #16a085 0%, #16685a 100%);
-  color: white;
   padding: 0.35rem 0.75rem;
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
+}
+
+.badgeActive {
+  background: linear-gradient(135deg, #16a085 0%, #16685a 100%);
+  color: white;
+}
+
+.badgeInactive {
+  background: #95a5a6;
+  color: white;
 }
 
 /* Descripción */
@@ -57,6 +97,39 @@
   overflow: hidden;
 }
 
+/* Requisitos (solo en variante detailed) */
+.requisitos {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.requisitos strong {
+  color: #16685a;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.requisitos p {
+  margin: 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Salario */
+.salary {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
 /* Footer de la card */
 .cardFooter {
   display: flex;
@@ -67,12 +140,25 @@
   gap: 1rem;
 }
 
+/* Contenedor de información del footer */
+.footerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
 /* Nombre de la empresa */
 .company {
   color: #7f8c8d;
   font-size: 0.9rem;
   font-weight: 500;
-  flex: 1;
+}
+
+/* Fecha de publicación */
+.date {
+  color: #95a5a6;
+  font-size: 0.85rem;
 }
 
 /* Botón de postularse */
@@ -128,7 +214,7 @@
     padding: 0.75rem;
   }
 
-  .company {
+  .footerInfo {
     text-align: center;
     margin-bottom: 0.5rem;
   }

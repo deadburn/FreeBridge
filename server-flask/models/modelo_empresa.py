@@ -7,7 +7,6 @@ class Empresa(db.Model):
     id_emp = db.Column(db.String(11), primary_key=True)
     id_usu = db.Column(db.String(11), db.ForeignKey("USUARIO.id_usu"), nullable=False)
     id_ciud = db.Column(db.String(11), db.ForeignKey("CIUDAD.id_ciud"), nullable=False)
-    nomb_emp = db.Column(db.String(100), nullable=False)
     NIT = db.Column(db.String(20), unique=True, nullable=False)
     tamaño = db.Column(db.Enum("Pequeña", "Mediana", "Grande"), nullable=False)
     desc_emp = db.Column(db.String(250), nullable=False)
@@ -21,4 +20,4 @@ class Empresa(db.Model):
     )
 
     def __repr__(self):
-        return f"<empresa {self.nomb_emp}>"
+        return f"<empresa {self.usuario.nombre if self.usuario else 'Sin nombre'}>"

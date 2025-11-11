@@ -86,7 +86,7 @@ export default function RegisterForm() {
             {/* Campo de nombre */}
             <input
               type="text"
-              placeholder="Nombre completo"
+              placeholder="Nombre Freelancer o Empresa"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               required

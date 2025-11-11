@@ -20,4 +20,5 @@ class Freelancer(db.Model):
     )
 
     def __repr__(self):
-        return f"<freelancer {self.profesion}>"
+        nombre = self.usuario.nombre if self.usuario else "Sin nombre"
+        return f"<freelancer {nombre} - {self.profesion}>"

@@ -109,11 +109,11 @@ export const AuthProvider = ({ children }) => {
       case "Empresa":
         navigate("/company-dashboard");
         break;
-      case "Freelancer":
-        navigate("/freelancer-dashboard");
+      case "FreeLancer":
+        navigate("/freelance-dashboard");
         break;
       default:
-        navigate("/perfil");
+        navigate("/login");
     }
   }, [isAuthenticated, userRole, navigate]);
 

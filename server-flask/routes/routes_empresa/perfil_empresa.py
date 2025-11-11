@@ -19,7 +19,7 @@ def verificar_perfil(id_usu):
                         "perfilCompleto": True,
                         "empresa": {
                             "id_emp": empresa.id_emp,
-                            "nomb_emp": empresa.nomb_emp,
+                            "nomb_emp": empresa.usuario.nombre,
                             "NIT": empresa.NIT,
                             "tamaño": empresa.tamaño,
                             "desc_emp": empresa.desc_emp,
@@ -40,7 +40,6 @@ def crear_perfil_empresa():
     try:
         nueva_empresa = Empresa(
             id_emp=str(uuid.uuid4())[:10],
-            nomb_emp=data["nomb_emp"],
             NIT=data["NIT"],
             tamaño=data["tamaño"],
             desc_emp=data["desc_emp"],
