@@ -5,11 +5,11 @@ from datetime import datetime
 class Postulacion(db.Model):
     __tablename__ = "POSTULACION"
 
-    id_post = db.Column(db.String(11), primary_key=True)
+    id_post = db.Column(db.String(36), primary_key=True)
     id_free = db.Column(
-        db.String(11), db.ForeignKey("FREELANCER.id_free"), nullable=False
+        db.String(36), db.ForeignKey("FREELANCER.id_free"), nullable=False
     )
-    id_vac = db.Column(db.String(11), db.ForeignKey("VACANTE.id_vac"), nullable=False)
+    id_vac = db.Column(db.String(36), db.ForeignKey("VACANTE.id_vac"), nullable=False)
     fecha_post = db.Column(db.DateTime, default=datetime.utcnow)
     estado_post = db.Column(db.String(20), default="pendiente")
 

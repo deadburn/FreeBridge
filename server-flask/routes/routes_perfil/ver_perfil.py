@@ -20,8 +20,8 @@ def obtener_perfil(current_user):
         if current_user.rol == "FreeLancer" and current_user.freelancer:
             perfil["freelancer"] = {
                 "profesion": current_user.freelancer.profesion,
-                "portafolio": current_user.freelancer.portafolio_URL,
                 "experiencia": current_user.freelancer.experiencia,
+                "hoja_vida": current_user.freelancer.hoja_vida,
             }
         elif current_user.rol == "Empresa" and current_user.empresa:
             perfil["empresa"] = {

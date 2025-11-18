@@ -1,0 +1,398 @@
+/* ============================================
+   EDICIÓN DE PERFIL FREELANCER
+   ============================================ */
+
+.editProfileContainer {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profileHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.profileHeader h2 {
+  color: #16685a;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.profileHeader p {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+/* === SECCIÓN DE AVATAR === */
+.avatarSection {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.avatarSection h3 {
+  color: #16685a;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.avatarContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.avatarPreview {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 4px solid #16a085;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.avatarPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholderIcon {
+  font-size: 8rem;
+  color: #bdc3c7;
+}
+
+.avatarActions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btnPrimary,
+.btnSecondary {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btnPrimary {
+  background: #16a085;
+  color: white;
+}
+
+.btnPrimary:hover {
+  background: #138d75;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(22, 160, 133, 0.3);
+}
+
+.btnSecondary {
+  background: white;
+  color: #16a085;
+  border: 2px solid #16a085;
+}
+
+.btnSecondary:hover {
+  background: #16a085;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* === SELECTOR DE AVATARES === */
+.avatarSelector {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+}
+
+.avatarSelector p {
+  color: #16685a;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.avatarGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.avatarOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.avatarOption:hover {
+  border-color: #16a085;
+  background: white;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(22, 160, 133, 0.2);
+}
+
+.avatarOption.selected {
+  border-color: #16a085;
+  background: #e8f8f5;
+  box-shadow: 0 4px 12px rgba(22, 160, 133, 0.3);
+}
+
+.avatarOptionPreview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #dee2e6;
+}
+
+.avatarOptionPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarOption span {
+  font-size: 0.9rem;
+  color: #16685a;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* === SECCIONES DEL FORMULARIO === */
+.profileForm {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.formSection {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.formSection h3 {
+  color: #16685a;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup:last-child {
+  margin-bottom: 0;
+}
+
+.formGroup label {
+  display: block;
+  color: #16685a;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.formGroup input[type="text"],
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.formGroup input[type="text"]:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #16a085;
+  box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.1);
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.formGroup small {
+  display: block;
+  margin-top: 0.5rem;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.fileInput {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px dashed #dee2e6;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.fileInput:hover {
+  border-color: #16a085;
+  background: #f8f9fa;
+}
+
+.currentFile {
+  padding: 1rem;
+  background: #e8f8f5;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #16a085;
+}
+
+.currentFile p {
+  color: #16685a;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.linkView {
+  color: #16a085;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.linkView:hover {
+  text-decoration: underline;
+}
+
+.fileSelected {
+  margin-top: 0.5rem;
+  color: #16a085;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* === ACCIONES DEL FORMULARIO === */
+.formActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e0e0e0;
+}
+
+.btnSave,
+.btnCancel {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btnSave {
+  background: #16a085;
+  color: white;
+}
+
+.btnSave:hover {
+  background: #138d75;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(22, 160, 133, 0.3);
+}
+
+.btnCancel {
+  background: #e74c3c;
+  color: white;
+}
+
+.btnCancel:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .editProfileContainer {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .profileHeader h2 {
+    font-size: 1.6rem;
+  }
+
+  .avatarPreview {
+    width: 150px;
+    height: 150px;
+  }
+
+  .avatarGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .avatarOption {
+    padding: 0.8rem;
+  }
+
+  .avatarOptionPreview {
+    width: 60px;
+    height: 60px;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .btnSave,
+  .btnCancel {
+    width: 100%;
+    justify-content: center;
+  }
+}

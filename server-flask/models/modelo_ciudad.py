@@ -5,7 +5,7 @@ from sqlalchemy import Column, String
 class Ciudad(db.Model):
     __tablename__ = "CIUDAD"
 
-    id_ciud = db.Column(db.String(10), primary_key=True)
+    id_ciud = db.Column(db.String(36), primary_key=True)
     nomb_ciud = db.Column(db.String(30), nullable=False)
 
     # Relaciones

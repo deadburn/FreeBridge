@@ -1,10 +1,14 @@
 import React from "react";
-import { useState } from "react";
-import { crearVacante } from "../api/vacancyApi.js";
+import { useState, useEffect } from "react";
+import { crearVacante, actualizarVacante } from "../api/vacancyApi.js";
 import SuccessModal from "./SuccessModal.jsx";
-import styles from "../styles/vacancyForm.module.css";
+import styles from "../styles/modules_forms/VacancyForm.module.css";
 
-export default function VacancyForm({ embedded = false }) {
+export default function VacancyForm({
+  embedded = false,
+  vacanteToEdit = null,
+  onSuccess = null,
+}) {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [requisitos, setRequisitos] = useState("");
@@ -12,6 +16,17 @@ export default function VacancyForm({ embedded = false }) {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [error, setError] = useState("");
   const [createdVacancyName, setCreatedVacancyName] = useState("");
+  const isEditing = !!vacanteToEdit;
+
+  // Cargar datos si estamos editando
+  useEffect(() => {
+    if (vacanteToEdit) {
+      setNombre(vacanteToEdit.nombre || "");
+      setDescripcion(vacanteToEdit.descripcion || "");
+      setRequisitos(vacanteToEdit.requisitos || "");
+      setSalario(vacanteToEdit.salario || "");
+    }
+  }, [vacanteToEdit]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,22 +44,41 @@ export default function VacancyForm({ embedded = false }) {
         vacanteData.salario = parseFloat(salario);
       }
 
-      await crearVacante(vacanteData);
-      setCreatedVacancyName(nombre);
-      setShowSuccessModal(true);
+      if (isEditing) {
+        await actualizarVacante(vacanteToEdit.id, vacanteData);
+        setCreatedVacancyName(nombre);
+        setShowSuccessModal(true);
+      } else {
+        await crearVacante(vacanteData);
+        setCreatedVacancyName(nombre);
+        setShowSuccessModal(true);
+      }
     } catch (error) {
-      console.error("Error al crear vacante:", error);
-      setError(error.response?.data?.error || "Error al crear la vacante");
+      console.error(
+        `Error al ${isEditing ? "actualizar" : "crear"} vacante:`,
+        error
+      );
+      setError(
+        error.response?.data?.error ||
+          `Error al ${isEditing ? "actualizar" : "crear"} la vacante`
+      );
     }
   };
 
   const handleSuccessModalClose = () => {
     setShowSuccessModal(false);
-    // Limpiar formulario
-    setNombre("");
-    setDescripcion("");
-    setRequisitos("");
-    setSalario("");
+
+    if (onSuccess) {
+      onSuccess();
+    }
+
+    // Solo limpiar formulario si no estamos editando
+    if (!isEditing) {
+      setNombre("");
+      setDescripcion("");
+      setRequisitos("");
+      setSalario("");
+    }
   };
 
   // Si está embebido, solo retornar el card sin el hero section
@@ -52,7 +86,9 @@ export default function VacancyForm({ embedded = false }) {
     return (
       <>
         <div className={styles.formCard}>
-          <h2 className={styles.headerForm}>Crear Nueva Vacante</h2>
+          <h2 className={styles.headerForm}>
+            {isEditing ? "Editar Vacante" : "Crear Nueva Vacante"}
+          </h2>
 
           <form onSubmit={handleSubmit}>
             <div className={styles.inputsContainer}>
@@ -102,7 +138,7 @@ export default function VacancyForm({ embedded = false }) {
 
               {/* Botón de submit */}
               <button type="submit" className={styles.submitButton}>
-                Crear Vacante
+                {isEditing ? "Actualizar Vacante" : "Crear Vacante"}
               </button>
             </div>
           </form>
@@ -112,9 +148,17 @@ export default function VacancyForm({ embedded = false }) {
           isOpen={showSuccessModal}
           onClose={handleSuccessModalClose}
           userName={createdVacancyName}
-          title="¡Vacante Creada!"
-          message="ha sido publicada exitosamente."
-          submessage="Los freelancers ya pueden ver y postularse a esta oportunidad."
+          title={isEditing ? "¡Vacante Actualizada!" : "¡Vacante Creada!"}
+          message={
+            isEditing
+              ? "ha sido actualizada exitosamente."
+              : "ha sido publicada exitosamente."
+          }
+          submessage={
+            isEditing
+              ? "Los cambios ya están disponibles para los freelancers."
+              : "Los freelancers ya pueden ver y postularse a esta oportunidad."
+          }
         />
       </>
     );

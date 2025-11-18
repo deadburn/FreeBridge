@@ -5,3 +5,4 @@ from .modelo_ciudad import Ciudad
 from .modelo_freelancer import Freelancer
 from .modelo_vacante import Vacante
 from .modelo_postulacion import Postulacion
+from .modelo_password_reset import PasswordResetToken

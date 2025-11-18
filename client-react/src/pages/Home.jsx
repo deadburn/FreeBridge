@@ -1,6 +1,8 @@
 import React from "react";
-import styles from "../styles/Home.module.css";
+import styles from "../styles/modules_pages/Home.module.css";
 import { Link } from "react-router-dom";
+import Footer from "../components/layoutComponents/Footer.jsx";
+import { FaPallet, FaDesktop, FaMobileAlt } from "react-icons/fa";
 
 export default function Home() {
   return (
@@ -21,7 +23,6 @@ export default function Home() {
           <button className={styles.ctaButton}>Comenzar ahora</button>
         </Link>
       </section>
-
       {/* Sección de categorías */}
       <section className={styles.categoriesSection}>
         {/* Título de la sección */}
@@ -31,26 +32,35 @@ export default function Home() {
         <div className={styles.categoriesGrid}>
           {/* Tarjeta de categoría - Diseño */}
           <div className={styles.categoryCard}>
-            <div className={styles.categoryIcon}>🎨</div>
+            <div className={styles.categoryIcon}>
+              {" "}
+              <FaPallet />{" "}
+            </div>
             <h3>Diseño</h3>
             <p>Encuentra diseñadores gráficos, UI/UX y creativos</p>
           </div>
 
           {/* Tarjeta de categoría - Desarrollo */}
           <div className={styles.categoryCard}>
-            <div className={styles.categoryIcon}>💻</div>
+            <div className={styles.categoryIcon}>
+              <FaDesktop />
+            </div>
             <h3>Desarrollo</h3>
             <p>Conecta con desarrolladores web y mobile</p>
           </div>
 
           {/* Tarjeta de categoría - Marketing */}
           <div className={styles.categoryCard}>
-            <div className={styles.categoryIcon}>📱</div>
+            <div className={styles.categoryIcon}>
+              <FaMobileAlt />
+            </div>
             <h3>Marketing</h3>
             <p>Expertos en marketing digital y contenido</p>
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }

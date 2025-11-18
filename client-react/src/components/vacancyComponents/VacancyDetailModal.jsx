@@ -1,0 +1,125 @@
+import React from "react";
+import {
+  MdClose,
+  MdLocationOn,
+  MdAttachMoney,
+  MdWork,
+  MdBusiness,
+} from "react-icons/md";
+import styles from "../../styles/modules_modals/VacancyDetailModal.module.css";
+
+export default function VacancyDetailModal({
+  vacante,
+  isOpen,
+  onClose,
+  onApply,
+  canApply,
+}) {
+  if (!isOpen || !vacante) return null;
+
+  const formatSalary = (salary) => {
+    if (!salary) return "No especificado";
+    return new Intl.NumberFormat("es-ES", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+    }).format(salary);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "No especificada";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <div className={styles.backdrop} onClick={handleBackdropClick}>
+      <div className={styles.modal}>
+        <button className={styles.closeButton} onClick={onClose}>
+          <MdClose />
+        </button>
+
+        <div className={styles.header}>
+          <h2 className={styles.title}>{vacante.nombre}</h2>
+          <span
+            className={`${styles.badge} ${
+              (vacante.estado || vacante.estado_vac)?.toLowerCase() ===
+              "abierta"
+                ? styles.badgeOpen
+                : styles.badgeClosed
+            }`}
+          >
+            {(vacante.estado || vacante.estado_vac)?.toLowerCase() === "abierta"
+              ? "Abierta"
+              : "Cerrada"}
+          </span>
+        </div>
+
+        <div className={styles.info}>
+          {vacante.empresa && (
+            <div className={styles.infoItem}>
+              <MdBusiness className={styles.icon} />
+              <span>{vacante.empresa.nombre || "Empresa no especificada"}</span>
+            </div>
+          )}
+
+          {vacante.ciudad && (
+            <div className={styles.infoItem}>
+              <MdLocationOn className={styles.icon} />
+              <span>
+                {vacante.ciudad.nombre || "Ubicación no especificada"}
+              </span>
+            </div>
+          )}
+
+          {vacante.salario && (
+            <div className={styles.infoItem}>
+              <MdAttachMoney className={styles.icon} />
+              <span>{formatSalary(vacante.salario)}</span>
+            </div>
+          )}
+
+          <div className={styles.infoItem}>
+            <MdWork className={styles.icon} />
+            <span>Publicada: {formatDate(vacante.fecha_publicacion)}</span>
+          </div>
+        </div>
+
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Descripción</h3>
+          <p className={styles.description}>
+            {vacante.descripcion || "Sin descripción"}
+          </p>
+        </div>
+
+        {vacante.requisitos && (
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>Requisitos</h3>
+            <p className={styles.requisitos}>{vacante.requisitos}</p>
+          </div>
+        )}
+
+        {canApply && (
+          <div className={styles.actions}>
+            <button
+              className={styles.applyButton}
+              onClick={() => onApply(vacante)}
+            >
+              Postularse a esta vacante
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

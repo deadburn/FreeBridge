@@ -10,7 +10,7 @@ export const useFreelancerProfile = (userId) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [formData, setFormData] = useState({
     profesion: "",
-    portafolio_URL: "",
+    hoja_vida: null,
     experiencia: "",
     id_ciud: "",
   });
@@ -43,11 +43,35 @@ export const useFreelancerProfile = (userId) => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    const { name, type, files, value } = e.target;
+
+    if (type === "file") {
+      const file = files[0];
+
+      // Validar que sea PDF
+      if (file && file.type !== "application/pdf") {
+        alert("Por favor, seleccione un archivo PDF");
+        e.target.value = "";
+        return;
+      }
+
+      // Validar tamaño (5MB)
+      if (file && file.size > 5 * 1024 * 1024) {
+        alert("El archivo no debe superar los 5MB");
+        e.target.value = "";
+        return;
+      }
+
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: file,
+      }));
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -57,12 +81,19 @@ export const useFreelancerProfile = (userId) => {
         throw new Error("No se encontró el ID del usuario");
       }
 
-      const freelancerData = {
-        ...formData,
-        id_usu: userId,
-      };
+      // Crear FormData para enviar archivo
+      const formDataToSend = new FormData();
+      formDataToSend.append("profesion", formData.profesion);
+      formDataToSend.append("experiencia", formData.experiencia);
+      formDataToSend.append("id_ciud", formData.id_ciud);
+      formDataToSend.append("id_usu", userId);
 
-      const response = await saveFreelancerProfile(freelancerData);
+      // Agregar archivo PDF si existe
+      if (formData.hoja_vida) {
+        formDataToSend.append("hoja_vida", formData.hoja_vida);
+      }
+
+      const response = await saveFreelancerProfile(formDataToSend);
       if (response.success) {
         if (response.id_free) {
           localStorage.setItem("freelancerId", response.id_free);

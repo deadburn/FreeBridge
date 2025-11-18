@@ -1,0 +1,179 @@
+/* Sección hero con fondo degradado y marca de agua */
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 3rem 2rem;
+  padding-top: calc(80px + 3rem); /* Navbar + padding original */
+  /* Fondo degradado de cyan claro a cyan más oscuro */
+  background: linear-gradient(180deg, #b8f2e6 0%, #7dd3c0 100%);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Marca de agua con patrón repetitivo del logo */
+.heroSection::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Patrón repetitivo con el SVG del logo */
+  background-image: url("/src/assets/freebridge.svg");
+  background-size: 150px 150px; /* Tamaño de cada logo */
+  background-repeat: repeat;
+  opacity: 0.08; /* Muy transparente para efecto de marca de agua */
+  pointer-events: none; /* No interfiere con clics */
+  z-index: 0;
+  /* Rotar ligeramente para efecto diagonal */
+  transform: rotate(-15deg) scale(1.2);
+}
+
+/* Card contenedor del formulario */
+.formCard {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 450px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative; /* Para que esté por encima de la marca de agua */
+  z-index: 1;
+}
+
+/* Efecto hover en la card */
+.formCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Título del formulario */
+.headerForm {
+  font-size: 2rem;
+  color: #16685a;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Contenedor de inputs */
+.inputsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* Estilos para los inputs */
+.input,
+.inputsContainer input[type="email"],
+.inputsContainer input[type="password"] {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Efecto focus en inputs */
+.input:focus,
+.inputsContainer input[type="email"]:focus,
+.inputsContainer input[type="password"]:focus {
+  outline: none;
+  border-color: #16a085;
+  box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.1);
+}
+
+/* Mensaje de error */
+.errorMessage {
+  background-color: #fee;
+  color: #c33;
+  padding: 0.875rem;
+  border-radius: 8px;
+  border-left: 4px solid #c33;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* Botón de submit */
+.submitButton {
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #16a085 0%, #16685a 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(22, 160, 133, 0.2);
+}
+
+/* Hover del botón */
+.submitButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(22, 160, 133, 0.3);
+}
+
+/* Active del botón */
+.submitButton:active {
+  transform: translateY(0);
+}
+
+/* Texto del pie del formulario */
+.footerText {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+/* Enlace dentro del texto */
+.link {
+  color: #16a085;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: #16685a;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heroSection {
+    padding: 2rem 1rem;
+    min-height: calc(100vh - 60px);
+  }
+
+  .formCard {
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+  }
+
+  .headerForm {
+    font-size: 1.75rem;
+  }
+
+  .input,
+  .inputsContainer input {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .submitButton {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+}

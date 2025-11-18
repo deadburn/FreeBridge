@@ -1,0 +1,267 @@
+/* Sección hero con fondo degradado y marca de agua */
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 3rem 2rem;
+  padding-top: calc(80px + 3rem); /* Navbar + padding original */
+  /* Fondo degradado de cyan claro a cyan más oscuro */
+  background: linear-gradient(180deg, #b8f2e6 0%, #7dd3c0 100%);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Marca de agua con patrón repetitivo del logo */
+.heroSection::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Patrón repetitivo con el SVG del logo */
+  background-image: url("/src/assets/freebridge.svg");
+  background-size: 150px 150px; /* Tamaño de cada logo */
+  background-repeat: repeat;
+  opacity: 0.08; /* Muy transparente para efecto de marca de agua */
+  pointer-events: none; /* No interfiere con clics */
+  z-index: 0;
+  /* Rotar ligeramente para efecto diagonal */
+  transform: rotate(-15deg) scale(1.2);
+}
+
+/* Card contenedor del formulario */
+.formCard {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 450px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative; /* Para que esté por encima de la marca de agua */
+  z-index: 1;
+}
+
+/* Efecto hover en la card */
+.formCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Título del formulario */
+.headerForm {
+  font-size: 2rem;
+  color: #16685a;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Contenedor de inputs */
+.inputsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* Estilos para los inputs de texto */
+.inputsContainer input[type="text"],
+.inputsContainer input[type="email"],
+.inputsContainer input[type="password"] {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Efecto focus en inputs */
+.inputsContainer input[type="text"]:focus,
+.inputsContainer input[type="email"]:focus,
+.inputsContainer input[type="password"]:focus {
+  outline: none;
+  border-color: #16a085;
+  box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.1);
+}
+
+/* Contenedor de opciones de rol */
+.roleContainer {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0.5rem 0;
+  justify-content: center;
+}
+
+/* Labels de los radio buttons */
+.roleLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #2c3e50;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+/* Efecto hover en labels */
+.roleLabel:hover {
+  color: #16a085;
+}
+
+/* Estilo de radio buttons */
+.roleLabel input[type="radio"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: #16a085;
+}
+
+/* Botón de submit */
+.submitButton {
+  background-color: #16a085;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 0.5rem;
+}
+
+/* Efecto hover en botón */
+.submitButton:hover {
+  background-color: #138f75;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Efecto active en botón */
+.submitButton:active {
+  transform: translateY(0);
+}
+
+/* Divisor visual para sección de roles */
+.roleDivider {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  text-align: center;
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+/* ===== TÉRMINOS Y CONDICIONES ===== */
+/* Contenedor del checkbox de términos */
+.termsContainer {
+  margin: 0.75rem 0;
+}
+
+/* Label del checkbox de términos */
+.termsLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #2c3e50;
+  line-height: 1.5;
+}
+
+/* Checkbox de términos */
+.termsLabel input[type="checkbox"] {
+  margin-top: 0.2rem;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: #16a085;
+  flex-shrink: 0;
+}
+
+/* Enlaces clickeables que abren modales */
+.linkButton {
+  background: none;
+  border: none;
+  color: #16a085;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  transition: color 0.3s ease;
+}
+
+/* Efecto hover en enlaces */
+.linkButton:hover {
+  color: #138f75;
+  text-decoration: none;
+}
+
+/* Efecto active en enlaces */
+.linkButton:active {
+  color: #0e6b5c;
+}
+
+/* ===== VARIANTE: Patrón aleatorio con múltiples capas ===== */
+/* Puedes usar esto en lugar del patrón simple cambiando la clase */
+.heroSectionRandom::before {
+  background-size: 120px 120px, 180px 180px, 100px 100px;
+  background-position: 0 0, 50px 50px, -30px 20px;
+  animation: watermarkFloat 60s linear infinite;
+}
+
+/* Animación opcional de flotación suave */
+@keyframes watermarkFloat {
+  0% {
+    transform: rotate(-15deg) scale(1.2) translateY(0);
+  }
+  50% {
+    transform: rotate(-15deg) scale(1.2) translateY(-20px);
+  }
+  100% {
+    transform: rotate(-15deg) scale(1.2) translateY(0);
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  /* Hero section en móviles */
+  .heroSection {
+    padding: 2rem 1rem;
+  }
+
+  /* Card más pequeña en móviles */
+  .formCard {
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+  }
+
+  /* Título más pequeño */
+  .headerForm {
+    font-size: 1.75rem;
+  }
+
+  /* Roles en vertical en pantallas pequeñas */
+  .roleContainer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  /* Inputs más compactos */
+  .inputsContainer input[type="text"],
+  .inputsContainer input[type="email"],
+  .inputsContainer input[type="password"] {
+    padding: 0.75rem;
+  }
+}

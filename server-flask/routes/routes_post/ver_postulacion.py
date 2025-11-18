@@ -28,7 +28,7 @@ def mis_postulaciones(current_user):
                 "vacante": (
                     {
                         "id": p.vacante.id_vac,
-                        "nombre": p.vacante.nombre_vacante,
+                        "nombre": p.vacante.nomb_vacante,
                         "empresa": (
                             p.vacante.empresa.usuario.nombre
                             if p.vacante.empresa
@@ -42,7 +42,7 @@ def mis_postulaciones(current_user):
             for p in postulaciones
         ]
 
-        return jsonify(resultado), 200
+        return jsonify({"postulaciones": resultado}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -40,3 +40,42 @@ export const loginUser = async (credentials) => {
     throw error;
   }
 };
+
+export const forgotPassword = async (email) => {
+  try {
+    const res = await api.post("/api/auth/forgot-password", { email });
+    return res.data;
+  } catch (error) {
+    console.error(
+      "Forgot password error:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+export const resetPassword = async (token, password) => {
+  try {
+    const res = await api.post("/api/auth/reset-password", { token, password });
+    return res.data;
+  } catch (error) {
+    console.error(
+      "Reset password error:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+export const deleteAccount = async () => {
+  try {
+    const res = await api.delete("/api/usuario/eliminar");
+    return res.data;
+  } catch (error) {
+    console.error(
+      "Delete account error:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};

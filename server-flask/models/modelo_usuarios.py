@@ -4,7 +4,7 @@ from utils.db import db
 class Usuario(db.Model):
     __tablename__ = "USUARIO"
 
-    id_usu = db.Column(db.String(10), primary_key=True)
+    id_usu = db.Column(db.String(36), primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
     correo = db.Column(db.String(100), unique=True, nullable=False)
     contraseña = db.Column(db.String(255), nullable=False)

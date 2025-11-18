@@ -2,21 +2,39 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getCities } from "../api/cityApi";
+import { eliminarVacante } from "../api/vacancyApi";
+import { getCompanyProfile, updateCompanyProfile } from "../api/companyApi";
+import { deleteAccount } from "../api/authApi";
+import { getNuevasPostulacionesEmpresa } from "../api/postApi";
 import { useCompanyProfile } from "../hooks/useCompanyProfile";
-import CompanyProfileForm from "../components/CompanyProfileForm";
-import CompanySidebar from "../components/CompanySidebar";
-import ApplicationsList from "../components/ApplicationsList";
-import VacancyForm from "../components/VacancyForm";
-import SuccessModal from "../components/SuccessModal";
-import styles from "../styles/CompanyDashboard.module.css";
+import CompanyProfileForm from "../components/profileComponents/CompanyProfileForm";
+import EditCompanyProfile from "../components/profileComponents/EditCompanyProfile";
+import CompanySidebar from "../components/dashboardComponents/CompanySidebar";
+import VacanciesWithApplications from "../components/dashboardComponents/VacanciesWithApplications";
+import VacancyForm from "../components/vacancyComponents/VacancyForm";
+import MyVacanciesList from "../components/vacancyComponents/MyVacanciesList";
+import SuccessModal from "../components/commonComponents/SuccessModal";
+import DeleteAccountModal from "../components/commonComponents/DeleteAccountModal";
+import EmpresaNotificationModal from "../components/commonComponents/EmpresaNotificationModal";
+import dashboardStyles from "../styles/modules_dashboards/Dashboard.module.css";
+import companyStyles from "../styles/modules_dashboards/CompanyDashboard.module.css";
+
+const styles = { ...dashboardStyles, ...companyStyles };
 
 const CompanyDashboard = () => {
   const [activeView, setActiveView] = useState("postulaciones");
-  const [postulaciones, setPostulaciones] = useState([]);
   const [cities, setCities] = useState([]);
+  const [vacanteToEdit, setVacanteToEdit] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [companyData, setCompanyData] = useState(null);
+  const [showEditSuccessModal, setShowEditSuccessModal] = useState(false);
+  const [notificacionesPostulaciones, setNotificacionesPostulaciones] =
+    useState([]);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const navigate = useNavigate();
 
-  const { isAuthenticated, userRole, userId, userName } = useAuth();
+  const { isAuthenticated, userRole, userId, userName, logout } = useAuth();
   const {
     profileComplete,
     loading,
@@ -38,44 +56,171 @@ const CompanyDashboard = () => {
         const c = await getCities();
         setCities(c);
 
-        // Cargar postulaciones de ejemplo (TODO: conectar con backend)
-        setPostulaciones([
-          {
-            id: 1,
-            nombre: "Mateo.R",
-            puesto: "Desarrollador web",
-            rating: 4,
-            avatar: "👨‍💻",
-          },
-          {
-            id: 2,
-            nombre: "Andres.M",
-            puesto: "Especialista en marketing",
-            rating: 5,
-            avatar: "👨‍💼",
-          },
-          {
-            id: 3,
-            nombre: "Laura.D",
-            puesto: "Especialista en multimedia",
-            rating: 4,
-            avatar: "👩‍💻",
-          },
-          {
-            id: 4,
-            nombre: "Marcela.S",
-            puesto: "Junior python",
-            rating: 4,
-            avatar: "👩‍💻",
-          },
-        ]);
+        // Cargar datos de la empresa si el perfil está completo
+        if (profileComplete) {
+          const profileData = await getCompanyProfile(userId);
+          console.log("Profile data received:", profileData);
+          if (profileData.empresa) {
+            setCompanyData(profileData.empresa);
+          }
+
+          // Verificar nuevas postulaciones
+          try {
+            console.log("Verificando nuevas postulaciones para empresa...");
+            const notificaciones = await getNuevasPostulacionesEmpresa();
+            console.log("Respuesta de notificaciones:", notificaciones);
+            if (
+              notificaciones.success &&
+              notificaciones.notificaciones &&
+              notificaciones.notificaciones.length > 0
+            ) {
+              console.log(
+                "Total de notificaciones:",
+                notificaciones.notificaciones.length
+              );
+              // Obtener las notificaciones ya vistas de localStorage
+              const notificacionesVistas = JSON.parse(
+                localStorage.getItem("notificacionesEmpresaVistas") || "[]"
+              );
+              console.log("Notificaciones ya vistas:", notificacionesVistas);
+
+              // Filtrar solo las notificaciones no vistas
+              const notificacionesNoVistas =
+                notificaciones.notificaciones.filter(
+                  (notif) => !notificacionesVistas.includes(notif.id)
+                );
+
+              console.log(
+                "Notificaciones no vistas:",
+                notificacionesNoVistas.length
+              );
+              if (notificacionesNoVistas.length > 0) {
+                setNotificacionesPostulaciones(notificacionesNoVistas);
+                setShowNotificationModal(true);
+                console.log("Modal de notificaciones activado");
+              } else {
+                console.log("Todas las notificaciones ya fueron vistas");
+              }
+            } else {
+              console.log("No hay notificaciones pendientes");
+            }
+          } catch (error) {
+            console.error("Error al verificar notificaciones:", error);
+          }
+        }
       } catch (err) {
         console.error("Error al cargar datos:", err);
       }
     };
 
     initializeDashboard();
-  }, [navigate, isAuthenticated, userRole]);
+  }, [navigate, isAuthenticated, userRole, userId, profileComplete]);
+
+  const handleEditVacante = (vacante) => {
+    setVacanteToEdit(vacante);
+    setActiveView("publicar");
+  };
+
+  const handleDeleteVacante = async (vacante) => {
+    if (!confirm(`¿Estás seguro de eliminar la vacante "${vacante.nombre}"?`)) {
+      return;
+    }
+
+    try {
+      await eliminarVacante(vacante.id);
+      alert("Vacante eliminada exitosamente");
+      setRefreshKey((prev) => prev + 1); // Forzar actualización
+    } catch (error) {
+      console.error("Error al eliminar vacante:", error);
+      alert("Error al eliminar la vacante. Intenta nuevamente.");
+    }
+  };
+
+  const handleVacancySuccess = () => {
+    // Volver a la vista de postulaciones después de crear/editar
+    setVacanteToEdit(null);
+    setActiveView("postulaciones");
+    setRefreshKey((prev) => prev + 1); // Forzar actualización
+  };
+
+  const handleViewChange = (view) => {
+    // Limpiar vacante a editar cuando cambiamos de vista
+    if (view !== "publicar") {
+      setVacanteToEdit(null);
+    }
+    setActiveView(view);
+  };
+
+  const handleCloseNotificationModal = () => {
+    // Marcar las notificaciones actuales como vistas
+    const notificacionesVistas = JSON.parse(
+      localStorage.getItem("notificacionesEmpresaVistas") || "[]"
+    );
+
+    const nuevasNotificacionesVistas = [
+      ...notificacionesVistas,
+      ...notificacionesPostulaciones.map((notif) => notif.id),
+    ];
+
+    localStorage.setItem(
+      "notificacionesEmpresaVistas",
+      JSON.stringify(nuevasNotificacionesVistas)
+    );
+
+    setShowNotificationModal(false);
+    setNotificacionesPostulaciones([]);
+  };
+
+  const handleViewPostulaciones = () => {
+    handleCloseNotificationModal();
+    setActiveView("postulaciones");
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const response = await deleteAccount();
+      if (response.success) {
+        // Cerrar sesión y redirigir
+        logout();
+        navigate("/login", {
+          state: {
+            message: "Tu cuenta ha sido eliminado exitosamente",
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Error al eliminar cuenta:", error);
+      alert("Error al eliminar la cuenta: " + error.message);
+    } finally {
+      setShowDeleteModal(false);
+    }
+  };
+
+  const handleSaveCompanyProfile = async (formData) => {
+    try {
+      const companyId = localStorage.getItem("companyId");
+      const userId = localStorage.getItem("userId");
+
+      if (!companyId || !userId) {
+        throw new Error("No se pudo obtener el ID de la empresa");
+      }
+
+      await updateCompanyProfile(companyId, formData);
+
+      // Recargar datos del perfil desde el servidor
+      const updatedProfile = await getCompanyProfile(userId);
+      console.log("Updated profile:", updatedProfile);
+      if (updatedProfile.empresa) {
+        setCompanyData(updatedProfile.empresa);
+      }
+
+      setShowEditSuccessModal(true);
+      setActiveView("postulaciones");
+    } catch (error) {
+      console.error("Error al actualizar perfil de empresa:", error);
+      alert("Error al actualizar el perfil: " + error.message);
+    }
+  };
 
   // Mostrar loading mientras se verifica el perfil
   if (loading) {
@@ -110,17 +255,73 @@ const CompanyDashboard = () => {
 
   return (
     <div className={styles.dashboard}>
-      <CompanySidebar activeView={activeView} onViewChange={setActiveView} />
+      <CompanySidebar
+        activeView={activeView}
+        onViewChange={handleViewChange}
+        onDeleteAccount={() => setShowDeleteModal(true)}
+        companyData={companyData}
+      />
 
       <main className={styles.mainContent}>
-        {activeView === "postulaciones" ? (
-          <ApplicationsList postulaciones={postulaciones} />
-        ) : (
+        {activeView === "postulaciones" && (
+          <VacanciesWithApplications key={refreshKey} />
+        )}
+
+        {activeView === "publicar" && (
           <div className={styles.publicarView}>
-            <VacancyForm embedded={true} />
+            <VacancyForm
+              embedded={true}
+              vacanteToEdit={vacanteToEdit}
+              onSuccess={handleVacancySuccess}
+            />
           </div>
         )}
+
+        {activeView === "mis-vacantes" && (
+          <MyVacanciesList
+            key={refreshKey}
+            onEdit={handleEditVacante}
+            onDelete={handleDeleteVacante}
+          />
+        )}
+
+        {activeView === "perfil" && (
+          <>
+            {!companyData && <p>Cargando datos de la empresa...</p>}
+            {companyData && (
+              <EditCompanyProfile
+                companyData={companyData}
+                cities={cities}
+                onSave={handleSaveCompanyProfile}
+                onCancel={() => setActiveView("postulaciones")}
+              />
+            )}
+          </>
+        )}
       </main>
+
+      <DeleteAccountModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteAccount}
+        userName={userName}
+      />
+
+      <SuccessModal
+        isOpen={showEditSuccessModal}
+        onClose={() => setShowEditSuccessModal(false)}
+        userName={userName}
+        title="¡Perfil Empresarial Actualizado!"
+        message="los datos de tu empresa han sido actualizados exitosamente."
+        submessage="Los cambios ya están visibles en tu perfil."
+      />
+
+      <EmpresaNotificationModal
+        notificaciones={notificacionesPostulaciones}
+        onClose={handleCloseNotificationModal}
+        onViewPostulaciones={handleViewPostulaciones}
+        isOpen={showNotificationModal}
+      />
     </div>
   );
 };

@@ -27,3 +27,16 @@ class Config:
 
     # Clave secreta para JWT
     SECRET_KEY = os.environ.get("SECRET_KEY", "tu_clave_secreta_temporal")
+
+    # Configuración de Flask-Mail (Mailtrap para desarrollo)
+    MAIL_SERVER = os.environ.get("MAIL_SERVER", "sandbox.smtp.mailtrap.io")
+    MAIL_PORT = int(os.environ.get("MAIL_PORT", 2525))
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME", "")
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD", "")
+    MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS", "True") == "True"
+    MAIL_USE_SSL = os.environ.get("MAIL_USE_SSL", "False") == "True"
+    MAIL_DEFAULT_SENDER = os.environ.get(
+        "MAIL_DEFAULT_SENDER", "noreply@freebridge.com"
+    )
+    MAIL_MAX_EMAILS = None
+    MAIL_ASCII_ATTACHMENTS = False

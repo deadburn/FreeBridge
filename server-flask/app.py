@@ -1,33 +1,58 @@
 from flask import Flask, jsonify
 import os
 from flask_cors import CORS
+from flask_mail import Mail
 from utils.db import db
 from utils.config import Config
+
+app = Flask(__name__)
+app.config.from_object(Config)
+
+# Debug: Verificar configuración de correo
+print("=" * 60)
+print("📧 CONFIGURACIÓN DE CORREO:")
+print(f"MAIL_SERVER: {app.config.get('MAIL_SERVER')}")
+print(f"MAIL_PORT: {app.config.get('MAIL_PORT')}")
+print(f"MAIL_USERNAME: {app.config.get('MAIL_USERNAME')}")
+print(f"MAIL_PASSWORD: {'*' * len(str(app.config.get('MAIL_PASSWORD', '')))}")
+print(f"MAIL_USE_TLS: {app.config.get('MAIL_USE_TLS')}")
+print(f"MAIL_USE_SSL: {app.config.get('MAIL_USE_SSL')}")
+print("=" * 60)
+
+# Inicializar Flask-Mail
+mail = Mail(app)
 
 # Importracion de Blueprints
 from routes.routes_auth.login import login_bp
 from routes.routes_auth.registro import registro_bp
+from routes.routes_auth.password_reset import password_reset_bp
+from routes.routes_auth.eliminar_cuenta import eliminar_cuenta_bp
 from routes.routes_perfil.ver_perfil import perfil_bp
 from routes.routes_perfil.perfil_freelancer import perfil_freelancer_bp
 from routes.routes_post.postulacion import postulacion_bp
 from routes.routes_post.ver_postulacion import ver_postulacion_bp
+from routes.routes_post.postulacion_empresa import postulacion_empresa_bp
+from routes.routes_post.actualizar_estado import actualizar_estado_bp
+from routes.routes_post.notificaciones import notificaciones_bp
+from routes.routes_post.cancelar_postulacion import cancelar_postulacion_bp
+from routes.routes_post.notificaciones_empresa import notificaciones_empresa_bp
 from routes.routes_vacancy.crear_vacante import crear_vacante_bp
 from routes.routes_vacancy.vacantes import vacantes_bp
 from routes.routes_vacancy.ver_vacante import ver_vacante_bp
 from routes.ciudades import ciudades_bp
 from routes.routes_empresa.perfil_empresa import perfil_empresa_bp
+from routes.archivos import archivos_bp
 
-
-app = Flask(__name__)
-app.config.from_object(Config)
-
+# Hacer mail disponible para los blueprints
+password_reset_bp.mail = mail
+actualizar_estado_bp.mail = mail
 
 CORS(
     app,
     resources={
         r"/api/*": {
-            "origins": ["http://localhost:5173"],
-            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "origins": ["http://localhost:5173", "http://localhost:5200"],
+            "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
             "expose_headers": ["Content-Type", "Authorization"],
             "supports_credentials": True,
@@ -37,7 +62,15 @@ CORS(
 )
 
 # Importar todos los modelos
-from models import Usuario, Empresa, Ciudad, Freelancer, Vacante, Postulacion
+from models import (
+    Usuario,
+    Empresa,
+    Ciudad,
+    Freelancer,
+    Vacante,
+    Postulacion,
+    PasswordResetToken,
+)
 
 db.init_app(app)
 
@@ -60,6 +93,8 @@ with app.app_context():
     # Autenticación
     app.register_blueprint(login_bp)
     app.register_blueprint(registro_bp)
+    app.register_blueprint(password_reset_bp)
+    app.register_blueprint(eliminar_cuenta_bp)
 
     # Perfil
     app.register_blueprint(perfil_bp)
@@ -71,6 +106,11 @@ with app.app_context():
     # Postulaciones
     app.register_blueprint(postulacion_bp)
     app.register_blueprint(ver_postulacion_bp)
+    app.register_blueprint(postulacion_empresa_bp)
+    app.register_blueprint(actualizar_estado_bp)
+    app.register_blueprint(notificaciones_bp)
+    app.register_blueprint(cancelar_postulacion_bp)
+    app.register_blueprint(notificaciones_empresa_bp)
 
     # Vacantes
     app.register_blueprint(crear_vacante_bp)
@@ -79,6 +119,9 @@ with app.app_context():
 
     # Empresa
     app.register_blueprint(perfil_empresa_bp)
+
+    # Archivos estáticos
+    app.register_blueprint(archivos_bp)
 
 
 ########## MANEJO DE ERRORES #############

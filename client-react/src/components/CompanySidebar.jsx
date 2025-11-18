@@ -2,11 +2,12 @@ import React from "react";
 import {
   MdDashboard,
   MdPostAdd,
+  MdWorkOutline,
   MdLabel,
   MdDelete,
   MdFolder,
 } from "react-icons/md";
-import styles from "../styles/CompanyDashboard.module.css";
+import styles from "../styles/modules_dashboards/CompanyDashboard.module.css";
 
 export default function CompanySidebar({ activeView, onViewChange }) {
   return (
@@ -22,6 +23,16 @@ export default function CompanySidebar({ activeView, onViewChange }) {
         >
           <MdDashboard className={styles.navIcon} />
           <span className={styles.navText}>Gestión de postulaciones</span>
+        </button>
+
+        <button
+          className={`${styles.navItem} ${
+            activeView === "mis-vacantes" ? styles.navItemActive : ""
+          }`}
+          onClick={() => onViewChange("mis-vacantes")}
+        >
+          <MdWorkOutline className={styles.navIcon} />
+          <span className={styles.navText}>Mis Vacantes</span>
         </button>
 
         <button
