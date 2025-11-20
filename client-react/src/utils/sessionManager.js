@@ -1,7 +1,6 @@
 /**
  * sessionManager.js
  * Utilidades para gestionar la sesión de usuario en localStorage
- * Funciones puras sin dependencias de React
  */
 
 // Claves de localStorage

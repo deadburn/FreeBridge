@@ -154,6 +154,22 @@
   margin: 0;
 }
 
+/* Mensaje cuando no hay notificaciones */
+.emptyMessage {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.emptyMessage small {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #95a5a6;
+}
+
 /* List */
 .list {
   display: flex;

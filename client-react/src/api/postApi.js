@@ -57,7 +57,26 @@ export const cancelarPostulacion = async (idPostulacion) => {
   } catch (error) {
     if (error.response && error.response.data) {
       throw new Error(
-        error.response.data.error || "Error al cancelar la postulación"
+        error.response.data.error || "Error al cancelar postulación"
+      );
+    }
+    throw error;
+  }
+};
+
+/**
+ * Verificar si el freelancer ya se postuló a una vacante
+ * @param {string} idVacante - ID de la vacante a verificar
+ * @returns {Promise<{postulado: boolean, estado: string}>}
+ */
+export const verificarPostulacion = async (idVacante) => {
+  try {
+    const res = await api.get(`/api/verificar-postulacion/${idVacante}`);
+    return res.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(
+        error.response.data.error || "Error al verificar postulación"
       );
     }
     throw error;

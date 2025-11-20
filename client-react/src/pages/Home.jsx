@@ -1,12 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../styles/modules_pages/Home.module.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Footer from "../components/layoutComponents/Footer.jsx";
 import { FaPallet, FaDesktop, FaMobileAlt } from "react-icons/fa";
 
 export default function Home() {
+  const location = useLocation();
+  const [successMessage, setSuccessMessage] = useState(null);
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+      // Limpiar el mensaje después de 5 segundos
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
   return (
     <div className={styles.home}>
+      {/* Mensaje de confirmación */}
+      {successMessage && (
+        <div className={styles.successBanner}>
+          <p>{successMessage}</p>
+        </div>
+      )}
+
       {/* Sección hero con fondo degradado */}
       <section className={styles.heroSection}>
         {/* Título principal de la página */}

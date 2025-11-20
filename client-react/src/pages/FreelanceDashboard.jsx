@@ -31,6 +31,7 @@ const FreelanceDashboard = () => {
   const [showEditSuccessModal, setShowEditSuccessModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [cambiosPostulaciones, setCambiosPostulaciones] = useState([]);
+  const [cambiosNoVistos, setCambiosNoVistos] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const navigate = useNavigate();
 
@@ -65,36 +66,27 @@ const FreelanceDashboard = () => {
 
           // Verificar cambios recientes en postulaciones
           try {
-            console.log("Verificando cambios en postulaciones...");
             const cambios = await getCambiosRecientes();
-            console.log("Respuesta de cambios:", cambios);
 
             if (
               cambios.success &&
               cambios.cambios &&
               cambios.cambios.length > 0
             ) {
-              console.log("Cambios encontrados:", cambios.cambios);
+              // Guardar TODAS las notificaciones
+              setCambiosPostulaciones(cambios.cambios);
 
               // Obtener las notificaciones ya vistas de localStorage
               const notificacionesVistas = JSON.parse(
                 localStorage.getItem("notificacionesVistas") || "[]"
               );
 
-              // Filtrar solo los cambios que no han sido vistos
-              const cambiosNoVistos = cambios.cambios.filter(
+              // Filtrar solo los cambios que no han sido vistos para el contador
+              const noVistos = cambios.cambios.filter(
                 (cambio) => !notificacionesVistas.includes(cambio.id)
               );
 
-              if (cambiosNoVistos.length > 0) {
-                console.log("Cambios no vistos:", cambiosNoVistos);
-                setCambiosPostulaciones(cambiosNoVistos);
-                setShowNotificationModal(true);
-              } else {
-                console.log("Todos los cambios ya fueron vistos");
-              }
-            } else {
-              console.log("No hay cambios recientes");
+              setCambiosNoVistos(noVistos);
             }
           } catch (error) {
             console.error("Error al verificar cambios:", error);
@@ -161,25 +153,34 @@ const FreelanceDashboard = () => {
     );
 
     setShowNotificationModal(false);
-    setCambiosPostulaciones([]);
+    // Limpiar solo las no vistas, pero mantener todas las notificaciones
+    setCambiosNoVistos([]);
   };
 
   const handleDeleteAccount = async () => {
     try {
       const response = await deleteAccount();
       if (response.success) {
-        // Cerrar sesión y redirigir
-        logout();
-        navigate("/login", {
+        // Cerrar modal primero
+        setShowDeleteModal(false);
+
+        // Redirigir INMEDIATAMENTE antes de limpiar la sesión
+        // Esto evita que el useEffect redirija a /login
+        navigate("/", {
+          replace: true,
           state: {
             message: "Tu cuenta ha sido eliminada exitosamente",
           },
         });
+
+        // Limpiar sesión DESPUÉS de redirigir
+        setTimeout(() => {
+          logout(false);
+        }, 50);
       }
     } catch (error) {
       console.error("Error al eliminar cuenta:", error);
       alert("Error al eliminar la cuenta: " + error.message);
-    } finally {
       setShowDeleteModal(false);
     }
   };
@@ -222,6 +223,8 @@ const FreelanceDashboard = () => {
         onViewChange={setActiveView}
         avatarUrl={freelancerData?.avatar}
         onDeleteAccount={() => setShowDeleteModal(true)}
+        notificationCount={cambiosNoVistos?.length || 0}
+        onNotificationClick={() => setShowNotificationModal(true)}
       />
 
       <main className={styles.mainContent}>

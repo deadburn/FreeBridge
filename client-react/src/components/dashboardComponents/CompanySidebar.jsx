@@ -8,6 +8,7 @@ import {
   MdFolder,
   MdEdit,
 } from "react-icons/md";
+import NotificationButton from "../commonComponents/NotificationButton";
 import styles from "../../styles/modules_dashboards/Sidebar.module.css";
 
 export default function CompanySidebar({
@@ -15,10 +16,10 @@ export default function CompanySidebar({
   onViewChange,
   onDeleteAccount,
   companyData,
+  notificationCount = 0,
+  onNotificationClick,
 }) {
   const getLogoDisplay = () => {
-    console.log("CompanyData logo:", companyData?.logo);
-
     if (!companyData?.logo) {
       return (
         <div className={styles.defaultLogo}>
@@ -33,8 +34,6 @@ export default function CompanySidebar({
       : companyData.logo;
     const logoUrl = `http://localhost:5000/api/uploads/logos/${logoFilename}?t=${Date.now()}`;
 
-    console.log("Logo URL:", logoUrl);
-
     return (
       <img
         src={logoUrl}
@@ -42,7 +41,7 @@ export default function CompanySidebar({
         className={styles.companyLogo}
         key={logoUrl}
         onError={(e) => {
-          console.error("Error cargando logo:", e.target.src);
+          console.error("Error al cargar logo de empresa");
         }}
       />
     );
@@ -104,6 +103,12 @@ export default function CompanySidebar({
 
       {/* Acciones adicionales */}
       <div className={styles.sidebarActions}>
+        {onNotificationClick && (
+          <NotificationButton
+            notificationCount={notificationCount}
+            onClick={onNotificationClick}
+          />
+        )}
         <button
           className={styles.actionButton}
           title="Editar perfil"

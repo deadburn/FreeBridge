@@ -31,6 +31,7 @@ const CompanyDashboard = () => {
   const [showEditSuccessModal, setShowEditSuccessModal] = useState(false);
   const [notificacionesPostulaciones, setNotificacionesPostulaciones] =
     useState([]);
+  const [notificacionesNoVistas, setNotificacionesNoVistas] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const navigate = useNavigate();
 
@@ -59,50 +60,32 @@ const CompanyDashboard = () => {
         // Cargar datos de la empresa si el perfil está completo
         if (profileComplete) {
           const profileData = await getCompanyProfile(userId);
-          console.log("Profile data received:", profileData);
           if (profileData.empresa) {
             setCompanyData(profileData.empresa);
           }
 
           // Verificar nuevas postulaciones
           try {
-            console.log("Verificando nuevas postulaciones para empresa...");
             const notificaciones = await getNuevasPostulacionesEmpresa();
-            console.log("Respuesta de notificaciones:", notificaciones);
             if (
               notificaciones.success &&
               notificaciones.notificaciones &&
               notificaciones.notificaciones.length > 0
             ) {
-              console.log(
-                "Total de notificaciones:",
-                notificaciones.notificaciones.length
-              );
+              // Guardar TODAS las notificaciones
+              setNotificacionesPostulaciones(notificaciones.notificaciones);
+
               // Obtener las notificaciones ya vistas de localStorage
               const notificacionesVistas = JSON.parse(
                 localStorage.getItem("notificacionesEmpresaVistas") || "[]"
               );
-              console.log("Notificaciones ya vistas:", notificacionesVistas);
 
-              // Filtrar solo las notificaciones no vistas
-              const notificacionesNoVistas =
-                notificaciones.notificaciones.filter(
-                  (notif) => !notificacionesVistas.includes(notif.id)
-                );
-
-              console.log(
-                "Notificaciones no vistas:",
-                notificacionesNoVistas.length
+              // Filtrar solo las notificaciones no vistas para el contador
+              const noVistas = notificaciones.notificaciones.filter(
+                (notif) => !notificacionesVistas.includes(notif.id)
               );
-              if (notificacionesNoVistas.length > 0) {
-                setNotificacionesPostulaciones(notificacionesNoVistas);
-                setShowNotificationModal(true);
-                console.log("Modal de notificaciones activado");
-              } else {
-                console.log("Todas las notificaciones ya fueron vistas");
-              }
-            } else {
-              console.log("No hay notificaciones pendientes");
+
+              setNotificacionesNoVistas(noVistas);
             }
           } catch (error) {
             console.error("Error al verificar notificaciones:", error);
@@ -168,7 +151,8 @@ const CompanyDashboard = () => {
     );
 
     setShowNotificationModal(false);
-    setNotificacionesPostulaciones([]);
+    // Limpiar solo las no vistas, pero mantener todas las notificaciones
+    setNotificacionesNoVistas([]);
   };
 
   const handleViewPostulaciones = () => {
@@ -180,18 +164,26 @@ const CompanyDashboard = () => {
     try {
       const response = await deleteAccount();
       if (response.success) {
-        // Cerrar sesión y redirigir
-        logout();
-        navigate("/login", {
+        // Cerrar modal primero
+        setShowDeleteModal(false);
+
+        // Redirigir INMEDIATAMENTE antes de limpiar la sesión
+        // Esto evita que el useEffect redirija a /login
+        navigate("/", {
+          replace: true,
           state: {
-            message: "Tu cuenta ha sido eliminado exitosamente",
+            message: "Tu cuenta ha sido eliminada exitosamente",
           },
         });
+
+        // Limpiar sesión DESPUÉS de redirigir
+        setTimeout(() => {
+          logout(false);
+        }, 50);
       }
     } catch (error) {
       console.error("Error al eliminar cuenta:", error);
       alert("Error al eliminar la cuenta: " + error.message);
-    } finally {
       setShowDeleteModal(false);
     }
   };
@@ -260,6 +252,8 @@ const CompanyDashboard = () => {
         onViewChange={handleViewChange}
         onDeleteAccount={() => setShowDeleteModal(true)}
         companyData={companyData}
+        notificationCount={notificacionesNoVistas?.length || 0}
+        onNotificationClick={() => setShowNotificationModal(true)}
       />
 
       <main className={styles.mainContent}>

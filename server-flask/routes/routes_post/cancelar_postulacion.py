@@ -2,12 +2,14 @@
 Blueprint para cancelar/eliminar postulaciones
 """
 
+import logging
 from flask import Blueprint, jsonify
 from utils.db import db
 from utils.auth import token_required
 from models.modelo_postulacion import Postulacion
 from models.modelo_freelancer import Freelancer
 
+logger = logging.getLogger(__name__)
 cancelar_postulacion_bp = Blueprint("cancelar_postulacion", __name__)
 
 
@@ -77,5 +79,8 @@ def cancelar_postulacion(current_user, id_post):
 
     except Exception as e:
         db.session.rollback()
-        print(f"Error al cancelar postulación: {str(e)}")
-        return jsonify({"success": False, "error": str(e)}), 500
+        logger.error(f"Error al cancelar postulación: {str(e)}")
+        return (
+            jsonify({"success": False, "error": "Error al cancelar postulación"}),
+            500,
+        )

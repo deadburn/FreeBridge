@@ -3,6 +3,50 @@
   min-height: 100vh;
   background-color: #ffffff;
   padding-top: 80px;
+  position: relative;
+}
+
+/* Banner de mensaje de éxito */
+.successBanner {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+  z-index: 10000;
+  animation: slideDown 0.3s ease, fadeOut 0.5s ease 4.5s forwards;
+  max-width: 90%;
+  text-align: center;
+}
+
+.successBanner p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 /* ===== HERO SECTION ===== */

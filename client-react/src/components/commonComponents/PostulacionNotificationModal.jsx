@@ -7,22 +7,12 @@ export default function PostulacionNotificationModal({
   onClose,
   isOpen,
 }) {
-  console.log("Modal renderizado con cambios:", cambios, "isOpen:", isOpen);
-
-  if (!isOpen || !cambios || cambios.length === 0) {
-    console.log(
-      "Modal no se muestra: isOpen =",
-      isOpen,
-      "cambios =",
-      cambios?.length || 0
-    );
+  if (!isOpen) {
     return null;
   }
 
   const aceptadas = cambios.filter((c) => c.estado === "aceptada");
   const rechazadas = cambios.filter((c) => c.estado === "rechazada");
-
-  console.log("Aceptadas:", aceptadas.length, "Rechazadas:", rechazadas.length);
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -36,15 +26,32 @@ export default function PostulacionNotificationModal({
             <MdEmail className={styles.emailIcon} />
           </div>
           <h2 className={styles.title}>
-            ¡Tienes actualizaciones en tus postulaciones!
+            {cambios && cambios.length > 0
+              ? "¡Tienes actualizaciones en tus postulaciones!"
+              : "Historial de Notificaciones"}
           </h2>
           <p className={styles.subtitle}>
-            Se han actualizado {cambios.length}{" "}
-            {cambios.length === 1 ? "postulación" : "postulaciones"}
+            {cambios && cambios.length > 0
+              ? `Se han actualizado ${cambios.length} ${
+                  cambios.length === 1 ? "postulación" : "postulaciones"
+                }`
+              : "No tienes notificaciones nuevas en este momento"}
           </p>
         </div>
 
         <div className={styles.content}>
+          {(!cambios || cambios.length === 0) && (
+            <div className={styles.section}>
+              <p className={styles.emptyMessage}>
+                📭 No hay actualizaciones de postulaciones por el momento.
+                <br />
+                <small>
+                  Las notificaciones sobre cambios en tus postulaciones
+                  aparecerán aquí.
+                </small>
+              </p>
+            </div>
+          )}
           {aceptadas.length > 0 && (
             <div className={styles.section}>
               <div className={styles.sectionHeader}>

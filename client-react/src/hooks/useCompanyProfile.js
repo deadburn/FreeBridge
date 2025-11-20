@@ -21,7 +21,6 @@ export const useCompanyProfile = (userId) => {
   const checkProfile = async () => {
     try {
       const profileData = await getCompanyProfile(userId);
-      console.log("Respuesta del perfil:", profileData);
 
       if (profileData && profileData.perfilCompleto && profileData.empresa) {
         setProfileComplete(true);
@@ -32,7 +31,6 @@ export const useCompanyProfile = (userId) => {
         setProfileComplete(false);
       }
     } catch (error) {
-      console.log("Perfil no encontrado, debe completarlo:", error.message);
       setProfileComplete(false);
     } finally {
       setLoading(false);

@@ -36,6 +36,7 @@ from routes.routes_post.actualizar_estado import actualizar_estado_bp
 from routes.routes_post.notificaciones import notificaciones_bp
 from routes.routes_post.cancelar_postulacion import cancelar_postulacion_bp
 from routes.routes_post.notificaciones_empresa import notificaciones_empresa_bp
+from routes.routes_post.verificar_postulacion import verificar_postulacion_bp
 from routes.routes_vacancy.crear_vacante import crear_vacante_bp
 from routes.routes_vacancy.vacantes import vacantes_bp
 from routes.routes_vacancy.ver_vacante import ver_vacante_bp
@@ -111,6 +112,7 @@ with app.app_context():
     app.register_blueprint(notificaciones_bp)
     app.register_blueprint(cancelar_postulacion_bp)
     app.register_blueprint(notificaciones_empresa_bp)
+    app.register_blueprint(verificar_postulacion_bp)
 
     # Vacantes
     app.register_blueprint(crear_vacante_bp)

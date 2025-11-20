@@ -69,6 +69,45 @@
   width: 100%;
 }
 
+/* Contenedor de contraseña con botón de toggle */
+.passwordContainer {
+  position: relative;
+  width: 100%;
+}
+
+.passwordContainer input {
+  width: 100%;
+  padding-right: 3rem; /* Espacio para el botón */
+}
+
+/* Botón para mostrar/ocultar contraseña */
+.togglePassword {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #16a085;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.togglePassword:hover {
+  color: #16685a;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.togglePassword:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
 /* Estilos para los inputs de texto */
 .inputsContainer input[type="text"],
 .inputsContainer input[type="email"],
@@ -90,6 +129,36 @@
   outline: none;
   border-color: #16a085;
   box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.1);
+}
+
+/* Input con error (contraseñas no coinciden) */
+.inputError {
+  border-color: #e74c3c !important;
+  background-color: #fee !important;
+}
+
+.inputError:focus {
+  border-color: #c0392b !important;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15) !important;
+}
+
+/* Mensaje de error de contraseñas */
+.passwordError {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: -0.75rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #fee;
+  border-left: 3px solid #e74c3c;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.passwordError::before {
+  content: "⚠";
+  font-size: 1rem;
 }
 
 /* Contenedor de opciones de rol */
@@ -165,6 +234,11 @@
 /* Contenedor del checkbox de términos */
 .termsContainer {
   margin: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  box-sizing: border-box;
 }
 
 /* Label del checkbox de términos */
@@ -186,6 +260,13 @@
   height: 18px;
   accent-color: #16a085;
   flex-shrink: 0;
+}
+
+/* Texto "Si ya tienes una cuenta" debajo del checkbox */
+.termsContainer > span {
+  font-size: 0.9rem;
+  color: #2c3e50;
+  text-align: center;
 }
 
 /* Enlaces clickeables que abren modales */

@@ -1,10 +1,12 @@
 """
-Blueprint para servir archivos estáticos (hojas de vida, etc.)
+Blueprint para servir archivos estáticos (hojas de vida, avatares, logos)
 """
 
-from flask import Blueprint, send_from_directory, jsonify
+import logging
 import os
+from flask import Blueprint, send_from_directory, jsonify
 
+logger = logging.getLogger(__name__)
 archivos_bp = Blueprint("archivos", __name__, url_prefix="/api")
 
 # Directorio base donde se almacenan los uploads
@@ -33,7 +35,7 @@ def descargar_hoja_vida(filename):
         )
 
     except Exception as e:
-        print(f"Error al servir archivo: {str(e)}")
+        logger.error(f"Error al servir archivo de hoja de vida: {str(e)}")
         return jsonify({"error": "Error al cargar el archivo"}), 500
 
 
@@ -58,7 +60,7 @@ def servir_avatar(filename):
         )
 
     except Exception as e:
-        print(f"Error al servir avatar: {str(e)}")
+        logger.error(f"Error al servir avatar: {str(e)}")
         return jsonify({"error": "Error al cargar el avatar"}), 500
 
 
@@ -83,5 +85,5 @@ def servir_logo(filename):
         )
 
     except Exception as e:
-        print(f"Error al servir logo: {str(e)}")
+        logger.error(f"Error al servir logo: {str(e)}")
         return jsonify({"error": "Error al cargar el logo"}), 500

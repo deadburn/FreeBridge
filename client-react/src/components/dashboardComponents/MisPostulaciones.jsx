@@ -24,8 +24,6 @@ export default function MisPostulaciones() {
     try {
       setLoading(true);
       const data = await getPostulacionesByFreelancer();
-      console.log("Datos recibidos del backend:", data);
-      console.log("Postulaciones array:", data.postulaciones);
       setPostulaciones(data.postulaciones || []);
     } catch (error) {
       console.error("Error al cargar postulaciones:", error);

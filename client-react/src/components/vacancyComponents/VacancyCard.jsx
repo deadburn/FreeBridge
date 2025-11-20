@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { verificarPostulacion } from "../../api/postApi";
 import styles from "../../styles/modules_vacancies/VacancyCard.module.css";
 
 /**
@@ -33,6 +34,30 @@ export default function VacancyCard({
   variant = "default",
 }) {
   const { isAuthenticated, userRole } = useAuth();
+  const [yaPostulado, setYaPostulado] = useState(false);
+  const [verificando, setVerificando] = useState(true);
+
+  // Verificar si el freelancer ya se postuló a esta vacante
+  useEffect(() => {
+    const verificarSiPostulo = async () => {
+      // Solo verificar si es freelancer autenticado
+      if (!isAuthenticated || userRole !== "FreeLancer" || !vacante.id) {
+        setVerificando(false);
+        return;
+      }
+
+      try {
+        const resultado = await verificarPostulacion(vacante.id);
+        setYaPostulado(resultado.postulado);
+      } catch (error) {
+        console.error("Error al verificar postulación:", error);
+      } finally {
+        setVerificando(false);
+      }
+    };
+
+    verificarSiPostulo();
+  }, [isAuthenticated, userRole, vacante.id]);
 
   // Maneja el clic en postularse
   const handleApply = (e) => {
@@ -52,8 +77,6 @@ export default function VacancyCard({
 
     if (onApply) {
       onApply(vacante);
-    } else {
-      console.log(`Postularse a: ${vacante.nombre}`);
     }
   };
 
@@ -68,11 +91,12 @@ export default function VacancyCard({
   const estado = vacante.estado || vacante.estado_vac || "abierta";
   const isActive = estado.toLowerCase() === "abierta";
 
-  // Determinar si mostrar el botón de postularse
-  const canApply = isAuthenticated && userRole === "FreeLancer" && isActive;
+  // Determinar si puede postularse (no debe estar ya postulado)
+  const canApply =
+    isAuthenticated && userRole === "FreeLancer" && isActive && !yaPostulado;
   const shouldShowButton =
     showApplyButton &&
-    (canApply || !isAuthenticated || userRole === "FreeLancer");
+    (canApply || yaPostulado || !isAuthenticated || userRole === "FreeLancer");
 
   // Formatea el salario
   const formatSalary = (salary) => {
@@ -167,13 +191,22 @@ export default function VacancyCard({
           <button
             className={styles.applyButton}
             onClick={handleApply}
-            disabled={!canApply}
+            disabled={!canApply || verificando}
             style={{
-              opacity: canApply ? 1 : 0.6,
-              cursor: canApply ? "pointer" : "not-allowed",
+              opacity: canApply && !verificando ? 1 : 0.6,
+              cursor: canApply && !verificando ? "pointer" : "not-allowed",
             }}
+            title={
+              yaPostulado
+                ? "Ya te has postulado a esta vacante"
+                : "Postularse a la vacante"
+            }
           >
-            Postularse
+            {verificando
+              ? "Verificando..."
+              : yaPostulado
+              ? "Ya postulado"
+              : "Postularse"}
           </button>
         )}
       </div>

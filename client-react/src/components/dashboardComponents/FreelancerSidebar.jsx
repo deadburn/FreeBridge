@@ -6,6 +6,7 @@ import {
   MdDelete,
   MdAssignment,
 } from "react-icons/md";
+import NotificationButton from "../commonComponents/NotificationButton";
 import { createAvatar } from "@dicebear/core";
 import {
   avataaars,
@@ -35,6 +36,8 @@ export default function FreelancerSidebar({
   onViewChange,
   avatarUrl,
   onDeleteAccount,
+  notificationCount = 0,
+  onNotificationClick,
 }) {
   // Generar avatar por defecto si no hay uno
   const getAvatarDisplay = () => {
@@ -117,6 +120,12 @@ export default function FreelancerSidebar({
 
       {/* Acciones adicionales */}
       <div className={styles.sidebarActions}>
+        {onNotificationClick && (
+          <NotificationButton
+            notificationCount={notificationCount}
+            onClick={onNotificationClick}
+          />
+        )}
         <button
           className={styles.actionButton}
           title="Editar perfil"

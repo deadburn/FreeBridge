@@ -3,12 +3,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { loginUser } from "../../api/authApi.js";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import styles from "../../styles/modules_forms/LoginForm.module.css";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   // Obtiene la función login del contexto de autenticación
@@ -20,12 +22,11 @@ export default function LoginForm() {
 
     try {
       const res = await loginUser({ email, password });
-      console.log("Login response:", res);
 
       // Usar el método login del contexto para guardar la sesión
       if (res.usuario) {
         login({
-          token: res.token || "token-placeholder", // Asegúrate de que el backend envíe el token
+          token: res.token || "token-placeholder",
           userRole: res.usuario.rol,
           userName: res.usuario.nombre,
           userId: res.usuario.id,
@@ -39,7 +40,6 @@ export default function LoginForm() {
         }
       }
     } catch (error) {
-      console.error("Error en login:", error);
       setError(error.response?.data?.error || "Error al iniciar sesión");
     }
   };
@@ -66,14 +66,26 @@ export default function LoginForm() {
             />
 
             {/* Campo de contraseña */}
-            <input
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className={styles.input}
-            />
+            <div className={styles.passwordContainer}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className={styles.input}
+              />
+              <button
+                type="button"
+                className={styles.togglePassword}
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={
+                  showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                }
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
 
             {/* Botón de submit */}
             <button type="submit" className={styles.submitButton}>
