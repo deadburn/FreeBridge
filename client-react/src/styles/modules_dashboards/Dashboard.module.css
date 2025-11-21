@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(180deg, #b8f2e6 0%, #7dd3c0 100%);
+  background: transparent;
   padding-top: 80px;
   box-sizing: border-box;
 }
@@ -42,7 +42,7 @@
   position: relative;
   display: flex;
   min-height: 100vh;
-  background: linear-gradient(180deg, #b8f2e6 0%, #7dd3c0 100%);
+  background: transparent;
   padding-top: 80px;
   box-sizing: border-box;
 }
@@ -75,6 +75,7 @@
   width: 100%;
   position: relative;
   z-index: 1;
+  background: transparent;
 }
 
 .viewTitle {
@@ -88,10 +89,16 @@
 @media (max-width: 1024px) {
   .dashboard {
     flex-direction: column;
+    padding-top: 80px;
+  }
+
+  .dashboard::before {
+    top: 80px;
   }
 
   .mainContent {
-    padding: 1.5rem 1rem;
+    padding: 0;
+    min-height: auto;
   }
 
   .viewTitle {
@@ -100,11 +107,59 @@
 }
 
 @media (max-width: 768px) {
+  .dashboard {
+    padding-top: 70px;
+  }
+
+  .dashboard::before {
+    top: 70px;
+    background-size: 120px 120px;
+  }
+
+  .loadingContainer {
+    padding-top: 70px;
+  }
+
   .mainContent {
-    padding: 1.5rem 1rem;
+    padding: 1.25rem 1rem;
   }
 
   .viewTitle {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    padding-top: 65px;
+  }
+
+  .dashboard::before {
+    top: 65px;
+    background-size: 100px 100px;
+  }
+
+  .loadingContainer {
+    padding-top: 65px;
+  }
+
+  .mainContent {
+    padding: 1rem 0.75rem;
+  }
+
+  .viewTitle {
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 3px;
+  }
+
+  .loadingContainer p {
+    font-size: 1rem;
   }
 }

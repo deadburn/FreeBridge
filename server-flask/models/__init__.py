@@ -6,3 +6,4 @@ from .modelo_freelancer import Freelancer
 from .modelo_vacante import Vacante
 from .modelo_postulacion import Postulacion
 from .modelo_password_reset import PasswordResetToken
+from .modelo_calificacion import Calificacion

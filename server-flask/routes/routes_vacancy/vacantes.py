@@ -20,6 +20,7 @@ def listar_vacantes():
                 "descripcion": v.descripcion,
                 "requisitos": v.requisitos,
                 "salario": float(v.salario) if v.salario else None,
+                "duracion_proyecto": v.duracion_proyecto,
                 "fecha_publicacion": (
                     v.fecha_publicacion.isoformat() if v.fecha_publicacion else None
                 ),
@@ -66,6 +67,7 @@ def listar_vacantes_empresa(current_user, empresa_id):
                 "descripcion": v.descripcion,
                 "requisitos": v.requisitos,
                 "salario": float(v.salario) if v.salario else None,
+                "duracion_proyecto": v.duracion_proyecto,
                 "fecha_publicacion": (
                     v.fecha_publicacion.isoformat() if v.fecha_publicacion else None
                 ),
@@ -155,6 +157,8 @@ def actualizar_vacante(current_user, vacante_id):
             vacante.requisitos = data["requisitos"]
         if "salario" in data:
             vacante.salario = data["salario"]
+        if "duracion_proyecto" in data:
+            vacante.duracion_proyecto = data["duracion_proyecto"]
         if "estado" in data:
             vacante.estado_vac = data["estado"]
 
@@ -170,6 +174,7 @@ def actualizar_vacante(current_user, vacante_id):
                         "descripcion": vacante.descripcion,
                         "requisitos": vacante.requisitos,
                         "salario": float(vacante.salario) if vacante.salario else None,
+                        "duracion_proyecto": vacante.duracion_proyecto,
                         "estado": vacante.estado_vac,
                     },
                 }

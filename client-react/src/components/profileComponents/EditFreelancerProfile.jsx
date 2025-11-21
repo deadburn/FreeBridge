@@ -49,33 +49,7 @@ export default function EditFreelancerProfile({
   const [currentFile, setCurrentFile] = useState(null);
   const [currentCVFile, setCurrentCVFile] = useState(null);
 
-  useEffect(() => {
-    if (freelancerData) {
-      setFormData({
-        profesion: freelancerData.profesion || "",
-        experiencia: freelancerData.experiencia || "",
-        id_ciud: freelancerData.id_ciud || "",
-        hoja_vida: null,
-        avatar: null,
-        avatar_default: freelancerData.avatar || "",
-      });
-
-      // Cargar avatar actual
-      if (freelancerData.avatar) {
-        if (freelancerData.avatar.startsWith("uploads/")) {
-          // Es un archivo subido
-          setPreviewAvatar(`/api/${freelancerData.avatar}`);
-        } else {
-          // Es un avatar por defecto
-          setPreviewAvatar(freelancerData.avatar);
-        }
-      } else {
-        // Generar avatar por defecto inicial
-        generateDefaultAvatar("avataaars");
-      }
-    }
-  }, [freelancerData]);
-
+  // Función para generar avatar por defecto
   const generateDefaultAvatar = (styleName) => {
     const avatarStyle = AVATAR_STYLES.find((s) => s.name === styleName);
     if (!avatarStyle) return;
@@ -96,6 +70,38 @@ export default function EditFreelancerProfile({
     }));
     setCurrentFile(null);
   };
+
+  useEffect(() => {
+    if (freelancerData) {
+      setFormData({
+        profesion: freelancerData.profesion || "",
+        experiencia: freelancerData.experiencia || "",
+        id_ciud: freelancerData.id_ciud || "",
+        hoja_vida: null,
+        avatar: null,
+        avatar_default: freelancerData.avatar || "",
+      });
+
+      // Cargar avatar actual
+      if (freelancerData.avatar) {
+        if (freelancerData.avatar.startsWith("uploads/")) {
+          // Es un archivo subido
+          setPreviewAvatar(`/api/${freelancerData.avatar}`);
+        } else if (freelancerData.avatar.startsWith("default_")) {
+          // Es un avatar por defecto - extraer el estilo y generar
+          const styleName = freelancerData.avatar.replace("default_", "");
+          setSelectedAvatarStyle(styleName);
+          generateDefaultAvatar(styleName);
+        } else {
+          // Avatar antiguo sin formato - usar avataaars por defecto
+          generateDefaultAvatar("avataaars");
+        }
+      } else {
+        // Generar avatar por defecto inicial
+        generateDefaultAvatar("avataaars");
+      }
+    }
+  }, [freelancerData, userName]);
 
   const handleAvatarStyleChange = (styleName) => {
     setSelectedAvatarStyle(styleName);

@@ -10,7 +10,7 @@ app.config.from_object(Config)
 
 # Debug: Verificar configuración de correo
 print("=" * 60)
-print("📧 CONFIGURACIÓN DE CORREO:")
+print("CONFIGURACIÓN DE CORREO:")
 print(f"MAIL_SERVER: {app.config.get('MAIL_SERVER')}")
 print(f"MAIL_PORT: {app.config.get('MAIL_PORT')}")
 print(f"MAIL_USERNAME: {app.config.get('MAIL_USERNAME')}")
@@ -43,6 +43,8 @@ from routes.routes_vacancy.ver_vacante import ver_vacante_bp
 from routes.ciudades import ciudades_bp
 from routes.routes_empresa.perfil_empresa import perfil_empresa_bp
 from routes.archivos import archivos_bp
+from routes.routes_payment.payment import payment_bp
+from routes.routes_rating.calificacion import calificacion_bp
 
 # Hacer mail disponible para los blueprints
 password_reset_bp.mail = mail
@@ -71,7 +73,9 @@ from models import (
     Vacante,
     Postulacion,
     PasswordResetToken,
+    Calificacion,
 )
+from models.modelo_token import TokenBalance, Transaccion
 
 db.init_app(app)
 
@@ -121,6 +125,12 @@ with app.app_context():
 
     # Empresa
     app.register_blueprint(perfil_empresa_bp)
+
+    # Pagos y tokens
+    app.register_blueprint(payment_bp)
+
+    # Calificaciones
+    app.register_blueprint(calificacion_bp)
 
     # Archivos estáticos
     app.register_blueprint(archivos_bp)

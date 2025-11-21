@@ -4,6 +4,7 @@ import {
   getPostulacionesByEmpresa,
   updatePostulacionEstado,
 } from "../../api/postApi";
+import { obtenerCalificacionFreelancer } from "../../api/ratingApi";
 import { useAuth } from "../../context/AuthContext";
 import VacancyCard from "../vacancyComponents/VacancyCard";
 import {
@@ -15,6 +16,7 @@ import {
   MdStarBorder,
   MdCheckCircle,
   MdCancel,
+  MdPerson,
 } from "react-icons/md";
 import styles from "../../styles/modules_vacancies/VacanciesWithApplications.module.css";
 
@@ -23,6 +25,7 @@ export default function VacanciesWithApplications() {
   const [postulaciones, setPostulaciones] = useState([]);
   const [expandedVacancy, setExpandedVacancy] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [ratings, setRatings] = useState({});
   const { userId } = useAuth();
 
   useEffect(() => {
@@ -40,6 +43,27 @@ export default function VacanciesWithApplications() {
 
       setVacantes(vacantesData || []);
       setPostulaciones(postulacionesData || []);
+
+      // Cargar calificaciones de cada freelancer
+      if (postulacionesData && postulacionesData.length > 0) {
+        const ratingsMap = {};
+        await Promise.all(
+          postulacionesData.map(async (post) => {
+            if (post.freelancer && post.freelancer.id) {
+              try {
+                const ratingData = await obtenerCalificacionFreelancer(
+                  post.freelancer.id
+                );
+                ratingsMap[post.freelancer.id] = ratingData.promedio || 0;
+              } catch (error) {
+                console.error("Error al cargar rating:", error);
+                ratingsMap[post.freelancer.id] = 0;
+              }
+            }
+          })
+        );
+        setRatings(ratingsMap);
+      }
     } catch (error) {
       console.error("Error al cargar datos:", error);
       setVacantes([]);
@@ -189,7 +213,51 @@ export default function VacanciesWithApplications() {
                             >
                               <div className={styles.candidateHeader}>
                                 <div className={styles.avatar}>
-                                  {postulacion.avatar}
+                                  {postulacion.avatar ? (
+                                    postulacion.avatar.startsWith(
+                                      "default_"
+                                    ) ? (
+                                      <img
+                                        src={`https://api.dicebear.com/7.x/${postulacion.avatar.replace(
+                                          "default_",
+                                          ""
+                                        )}/svg?seed=${postulacion.nombre}`}
+                                        alt={postulacion.nombre}
+                                        style={{
+                                          width: "100%",
+                                          height: "100%",
+                                          borderRadius: "50%",
+                                        }}
+                                      />
+                                    ) : postulacion.avatar.startsWith(
+                                        "uploads/"
+                                      ) ? (
+                                      <img
+                                        src={`http://localhost:5000/api/${postulacion.avatar}`}
+                                        alt={postulacion.nombre}
+                                        style={{
+                                          width: "100%",
+                                          height: "100%",
+                                          borderRadius: "50%",
+                                          objectFit: "cover",
+                                        }}
+                                      />
+                                    ) : (
+                                      <MdPerson
+                                        style={{
+                                          fontSize: "2rem",
+                                          color: "#fff",
+                                        }}
+                                      />
+                                    )
+                                  ) : (
+                                    <MdPerson
+                                      style={{
+                                        fontSize: "2rem",
+                                        color: "#fff",
+                                      }}
+                                    />
+                                  )}
                                 </div>
                                 <div className={styles.candidateInfo}>
                                   <h5 className={styles.candidateName}>
@@ -211,8 +279,11 @@ export default function VacanciesWithApplications() {
 
                               <div className={styles.applicationFooter}>
                                 <div className={styles.rating}>
-                                  {[...Array(5)].map((_, index) =>
-                                    index < postulacion.rating ? (
+                                  {[...Array(5)].map((_, index) => {
+                                    const freelancerId =
+                                      postulacion.freelancer?.id;
+                                    const rating = ratings[freelancerId] || 0;
+                                    return index < Math.round(rating) ? (
                                       <MdStar
                                         key={index}
                                         className={styles.starFilled}
@@ -222,8 +293,8 @@ export default function VacanciesWithApplications() {
                                         key={index}
                                         className={styles.starEmpty}
                                       />
-                                    )
-                                  )}
+                                    );
+                                  })}
                                 </div>
                                 <span
                                   className={`${styles.statusBadge} ${

@@ -3,6 +3,53 @@
    Base compartida entre CompanySidebar y FreelancerSidebar
    ============================================ */
 
+/* Botón hamburguesa para abrir/cerrar sidebar */
+.toggleButton {
+  position: fixed;
+  top: 90px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  background: white;
+  border: 2px solid #16a085;
+  border-radius: 10px;
+  color: #16a085;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.toggleButton:hover {
+  background: linear-gradient(135deg, #16a085 0%, #16685a 100%);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Overlay oscuro cuando el sidebar está abierto */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .sidebar {
   width: 320px;
   min-width: 320px;
@@ -11,14 +58,20 @@
   padding-top: 7rem;
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 80px;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 0;
+  left: -320px; /* Oculto por defecto */
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100vh - 80px);
-  align-self: flex-start;
-  z-index: 1;
+  height: 100vh;
+  z-index: 1000;
+  transition: left 0.3s ease;
+}
+
+/* Sidebar abierto */
+.sidebarOpen {
+  left: 0;
 }
 
 .sidebarTitle {
@@ -116,33 +169,119 @@
 
 /* === RESPONSIVE === */
 @media (max-width: 1024px) {
-  .sidebar {
-    width: 100%;
-    padding: 1.5rem 1rem;
+  .toggleButton {
+    top: 85px;
+    left: 15px;
   }
 
-  .nav {
-    flex-direction: row;
-    overflow-x: auto;
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+    padding: 1.5rem 1rem;
+    padding-top: 6rem;
+  }
+
+  .sidebarTitle {
+    font-size: 1.5rem;
+    padding: 1.2rem;
   }
 
   .navItem {
-    min-width: 200px;
+    padding: 1rem 1.2rem;
+    font-size: 0.95rem;
   }
 
-  .sidebarActions {
-    justify-content: center;
-    margin-top: 1rem;
+  .logoContainer {
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .companyLogo,
+  .defaultLogo {
+    width: 100px;
+    height: 100px;
   }
 }
 
 @media (max-width: 768px) {
+  .toggleButton {
+    top: 80px;
+    left: 10px;
+    width: 45px;
+    height: 45px;
+  }
+
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    padding: 1.2rem 0.8rem;
+    padding-top: 5rem;
+  }
+
   .sidebarTitle {
     font-size: 1.3rem;
+    padding: 1rem;
+  }
+
+  .navItem {
+    padding: 0.9rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .navIcon {
+    font-size: 1.3rem;
+    width: 25px;
   }
 
   .navText {
     font-size: 0.9rem;
+  }
+
+  .actionButton {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+
+  .logoContainer {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .companyLogo,
+  .defaultLogo {
+    width: 90px;
+    height: 90px;
+  }
+
+  .companyName {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+  }
+
+  .sidebarTitle {
+    font-size: 1.2rem;
+  }
+
+  .navItem {
+    padding: 0.8rem 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .logoContainer {
+    padding: 0.8rem;
+  }
+
+  .companyLogo,
+  .defaultLogo {
+    width: 80px;
+    height: 80px;
   }
 }
 

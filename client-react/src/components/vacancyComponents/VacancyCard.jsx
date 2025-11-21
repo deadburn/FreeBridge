@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { verificarPostulacion } from "../../api/postApi";
+import { MdAttachMoney } from "react-icons/md";
 import styles from "../../styles/modules_vacancies/VacancyCard.module.css";
 
 /**
@@ -101,10 +102,9 @@ export default function VacancyCard({
   // Formatea el salario
   const formatSalary = (salary) => {
     if (!salary) return null;
-    return new Intl.NumberFormat("es-ES", {
-      style: "currency",
-      currency: "USD",
+    return new Intl.NumberFormat("es-CO", {
       minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(salary);
   };
 
@@ -166,8 +166,18 @@ export default function VacancyCard({
 
       {/* Mostrar salario si está habilitado y existe */}
       {showSalary && vacante.salario && (
-        <div className={styles.salary}>💰 {formatSalary(vacante.salario)}</div>
+        <div className={styles.salary}>
+          <MdAttachMoney /> {formatSalary(vacante.salario)}
+        </div>
       )}
+
+      {/* Mostrar duración del proyecto si existe */}
+      {vacante.duracion_proyecto &&
+        vacante.duracion_proyecto !== "No especificado" && (
+          <div className={styles.duration}>
+            ⏱️ Duración: {vacante.duracion_proyecto}
+          </div>
+        )}
 
       <div className={styles.cardFooter}>
         <div className={styles.footerInfo}>

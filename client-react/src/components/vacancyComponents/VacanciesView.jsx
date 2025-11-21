@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getVacantes } from "../../api/vacancyApi";
-import { postularVacante } from "../../api/postApi";
+import { postularVacante, verificarPostulacion } from "../../api/postApi";
 import { useAuth } from "../../context/AuthContext";
 import VacancyCard from "./VacancyCard";
 import VacancyDetailModal from "./VacancyDetailModal";
@@ -11,9 +11,12 @@ export default function VacanciesView() {
   const [vacancies, setVacancies] = useState([]);
   const [filteredVacancies, setFilteredVacancies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [durationFilter, setDurationFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedVacancy, setSelectedVacancy] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [yaPostulado, setYaPostulado] = useState(false);
+  const [verificandoPostulacion, setVerificandoPostulacion] = useState(false);
   const { isAuthenticated, userRole } = useAuth();
 
   useEffect(() => {
@@ -22,7 +25,7 @@ export default function VacanciesView() {
 
   useEffect(() => {
     filterVacancies();
-  }, [searchTerm, vacancies]);
+  }, [searchTerm, durationFilter, vacancies]);
 
   const loadVacancies = async () => {
     try {
@@ -39,14 +42,22 @@ export default function VacanciesView() {
   };
 
   const filterVacancies = () => {
-    if (!searchTerm.trim()) {
-      setFilteredVacancies(vacancies);
-      return;
+    let filtered = vacancies;
+
+    // Filtrar por término de búsqueda
+    if (searchTerm.trim()) {
+      filtered = filtered.filter((vacancy) =>
+        vacancy.nombre?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
 
-    const filtered = vacancies.filter((vacancy) =>
-      vacancy.nombre?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Filtrar por duración
+    if (durationFilter) {
+      filtered = filtered.filter(
+        (vacancy) => vacancy.duracion_proyecto === durationFilter
+      );
+    }
+
     setFilteredVacancies(filtered);
   };
 
@@ -54,14 +65,40 @@ export default function VacanciesView() {
     setSearchTerm(e.target.value);
   };
 
-  const handleViewDetails = (vacancy) => {
+  const handleDurationFilter = (e) => {
+    setDurationFilter(e.target.value);
+  };
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setDurationFilter("");
+  };
+
+  const handleViewDetails = async (vacancy) => {
     setSelectedVacancy(vacancy);
     setIsModalOpen(true);
+    setYaPostulado(false);
+
+    // Verificar si ya se postuló a esta vacante
+    if (isAuthenticated && userRole === "FreeLancer" && vacancy.id) {
+      setVerificandoPostulacion(true);
+      try {
+        const resultado = await verificarPostulacion(vacancy.id);
+        setYaPostulado(resultado.postulado);
+      } catch (error) {
+        console.error("Error al verificar postulación:", error);
+        setYaPostulado(false);
+      } finally {
+        setVerificandoPostulacion(false);
+      }
+    }
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedVacancy(null);
+    setYaPostulado(false);
+    setVerificandoPostulacion(false);
   };
 
   const handleApply = async (vacante) => {
@@ -107,18 +144,45 @@ export default function VacanciesView() {
     <div className={styles.publicarView}>
       <h1 className={styles.viewTitle}>Vacantes disponibles</h1>
 
-      {/* Buscador */}
-      <div className={styles.searchContainer}>
-        <input
-          type="text"
-          placeholder="Ingresa el nombre de las vacantes de tu interés"
-          className={styles.searchInput}
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-        <button className={styles.searchButton} onClick={filterVacancies}>
-          <MdSearch />
-        </button>
+      {/* Contenedor de filtros */}
+      <div className={styles.filtersContainer}>
+        {/* Buscador por nombre */}
+        <div className={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Buscar por nombre de vacante"
+            className={styles.searchInput}
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          <button className={styles.searchButton} onClick={filterVacancies}>
+            <MdSearch />
+          </button>
+        </div>
+
+        {/* Filtro por duración */}
+        <div className={styles.filterGroup}>
+          <select
+            className={styles.filterSelect}
+            value={durationFilter}
+            onChange={handleDurationFilter}
+          >
+            <option value="">Todas las duraciones</option>
+            <option value="1-3 meses">1-3 meses</option>
+            <option value="3-6 meses">3-6 meses</option>
+            <option value="6-12 meses">6-12 meses</option>
+            <option value="Más de 1 año">Más de 1 año</option>
+            <option value="Indefinido">Indefinido</option>
+            <option value="Por proyecto">Por proyecto</option>
+          </select>
+        </div>
+
+        {/* Botón para limpiar filtros */}
+        {(searchTerm || durationFilter) && (
+          <button className={styles.clearButton} onClick={clearFilters}>
+            Limpiar filtros
+          </button>
+        )}
       </div>
 
       {/* Grid de vacantes */}
@@ -138,8 +202,8 @@ export default function VacanciesView() {
           ))
         ) : (
           <p className={styles.noVacancies}>
-            {searchTerm
-              ? `No se encontraron vacantes con "${searchTerm}"`
+            {searchTerm || durationFilter
+              ? "No se encontraron vacantes con los filtros seleccionados"
               : "No hay vacantes disponibles en este momento"}
           </p>
         )}
@@ -151,7 +215,13 @@ export default function VacanciesView() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onApply={handleApply}
-        canApply={isAuthenticated && userRole === "FreeLancer"}
+        canApply={
+          isAuthenticated &&
+          userRole === "FreeLancer" &&
+          !yaPostulado &&
+          !verificandoPostulacion
+        }
+        yaPostulado={yaPostulado}
       />
     </div>
   );

@@ -123,26 +123,30 @@
 @media (max-width: 768px) {
   /* Navbar responsivo en pantallas pequeñas */
   .navbar {
-    flex-direction: column;
-    padding: 1rem;
-    gap: 1rem;
+    padding: 0.75rem 1rem;
+    height: auto;
+    min-height: 60px;
   }
 
   /* Navbar compacto también en vertical en móviles */
   .navbarCompact {
     padding: 0.75rem 1rem;
+    height: auto;
+    min-height: 60px;
   }
 
-  /* Contenedor de enlaces en modo vertical */
+  /* Contenedor de enlaces en modo horizontal compacto */
   .navLinks {
-    flex-direction: column;
-    gap: 0.75rem;
-    width: 100%;
-    text-align: center;
+    gap: 0.5rem;
   }
 
   /* Logo más pequeño en dispositivos móviles */
   .logo img {
-    height: 32px;
+    height: 28px;
+  }
+
+  /* Iconos más pequeños en móvil */
+  .icon {
+    font-size: 1.25rem;
   }
 }

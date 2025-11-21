@@ -13,6 +13,7 @@ export default function VacancyForm({
   const [descripcion, setDescripcion] = useState("");
   const [requisitos, setRequisitos] = useState("");
   const [salario, setSalario] = useState("");
+  const [duracionProyecto, setDuracionProyecto] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [error, setError] = useState("");
   const [createdVacancyName, setCreatedVacancyName] = useState("");
@@ -25,6 +26,7 @@ export default function VacancyForm({
       setDescripcion(vacanteToEdit.descripcion || "");
       setRequisitos(vacanteToEdit.requisitos || "");
       setSalario(vacanteToEdit.salario || "");
+      setDuracionProyecto(vacanteToEdit.duracion_proyecto || "");
     }
   }, [vacanteToEdit]);
 
@@ -42,6 +44,11 @@ export default function VacancyForm({
       // Solo incluir salario si se proporcionó
       if (salario) {
         vacanteData.salario = parseFloat(salario);
+      }
+
+      // Incluir duración del proyecto
+      if (duracionProyecto) {
+        vacanteData.duracion_proyecto = duracionProyecto;
       }
 
       if (isEditing) {
@@ -78,6 +85,7 @@ export default function VacancyForm({
       setDescripcion("");
       setRequisitos("");
       setSalario("");
+      setDuracionProyecto("");
     }
   };
 
@@ -135,6 +143,22 @@ export default function VacancyForm({
                 min="0"
                 step="0.01"
               />
+
+              {/* Campo de duración del proyecto */}
+              <select
+                value={duracionProyecto}
+                onChange={(e) => setDuracionProyecto(e.target.value)}
+                className={styles.input}
+                required
+              >
+                <option value="">Selecciona la duración del proyecto</option>
+                <option value="1-3 meses">1-3 meses</option>
+                <option value="3-6 meses">3-6 meses</option>
+                <option value="6-12 meses">6-12 meses</option>
+                <option value="Más de 1 año">Más de 1 año</option>
+                <option value="Indefinido">Indefinido</option>
+                <option value="Por proyecto">Por proyecto</option>
+              </select>
 
               {/* Botón de submit */}
               <button type="submit" className={styles.submitButton}>
@@ -215,6 +239,22 @@ export default function VacancyForm({
               min="0"
               step="0.01"
             />
+
+            {/* Campo de duración del proyecto */}
+            <select
+              value={duracionProyecto}
+              onChange={(e) => setDuracionProyecto(e.target.value)}
+              className={styles.input}
+              required
+            >
+              <option value="">Selecciona la duración del proyecto</option>
+              <option value="1-3 meses">1-3 meses</option>
+              <option value="3-6 meses">3-6 meses</option>
+              <option value="6-12 meses">6-12 meses</option>
+              <option value="Más de 1 año">Más de 1 año</option>
+              <option value="Indefinido">Indefinido</option>
+              <option value="Por proyecto">Por proyecto</option>
+            </select>
 
             {/* Botón de submit */}
             <button type="submit" className={styles.submitButton}>

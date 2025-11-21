@@ -40,3 +40,12 @@ class Config:
     )
     MAIL_MAX_EMAILS = None
     MAIL_ASCII_ATTACHMENTS = False
+
+    # Configuración de Stripe
+    STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
+    STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", "")
+    STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
+
+    # Precios de tokens
+    TOKEN_PRICE_USD = 3.00  # Precio por token en USD
+    USD_TO_COP_RATE = 4000  # Tasa de cambio aproximada (actualizar según necesidad)

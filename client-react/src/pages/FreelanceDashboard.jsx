@@ -8,6 +8,7 @@ import {
 } from "../api/freelancerApi";
 import { deleteAccount } from "../api/authApi";
 import { getCambiosRecientes } from "../api/postApi";
+import { obtenerCalificacionFreelancer } from "../api/ratingApi";
 import { useFreelancerProfile } from "../hooks/useFreelancerProfile";
 import FreelancerProfileForm from "../components/profileComponents/FreelancerProfileForm";
 import EditFreelancerProfile from "../components/profileComponents/EditFreelancerProfile";
@@ -33,6 +34,8 @@ const FreelanceDashboard = () => {
   const [cambiosPostulaciones, setCambiosPostulaciones] = useState([]);
   const [cambiosNoVistos, setCambiosNoVistos] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [totalRatings, setTotalRatings] = useState(0);
   const navigate = useNavigate();
 
   const { isAuthenticated, userRole, userId, userName, logout } = useAuth();
@@ -62,6 +65,17 @@ const FreelanceDashboard = () => {
           const profileData = await getFreelancerProfile(userId);
           if (profileData.freelancer) {
             setFreelancerData(profileData.freelancer);
+
+            // Obtener calificación del freelancer usando id_free
+            try {
+              const ratingData = await obtenerCalificacionFreelancer(
+                profileData.freelancer.id_free
+              );
+              setRating(ratingData.promedio || 0);
+              setTotalRatings(ratingData.total || 0);
+            } catch (error) {
+              console.error("Error al obtener calificación:", error);
+            }
           }
 
           // Verificar cambios recientes en postulaciones
@@ -225,6 +239,8 @@ const FreelanceDashboard = () => {
         onDeleteAccount={() => setShowDeleteModal(true)}
         notificationCount={cambiosNoVistos?.length || 0}
         onNotificationClick={() => setShowNotificationModal(true)}
+        rating={rating}
+        totalRatings={totalRatings}
       />
 
       <main className={styles.mainContent}>

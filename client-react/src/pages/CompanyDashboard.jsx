@@ -13,6 +13,9 @@ import CompanySidebar from "../components/dashboardComponents/CompanySidebar";
 import VacanciesWithApplications from "../components/dashboardComponents/VacanciesWithApplications";
 import VacancyForm from "../components/vacancyComponents/VacancyForm";
 import MyVacanciesList from "../components/vacancyComponents/MyVacanciesList";
+import TokenBalance from "../components/paymentComponents/TokenBalance";
+import TransactionHistory from "../components/paymentComponents/TransactionHistory";
+import FreelancersRatingView from "../components/ratingComponents/FreelancersRatingView";
 import SuccessModal from "../components/commonComponents/SuccessModal";
 import DeleteAccountModal from "../components/commonComponents/DeleteAccountModal";
 import EmpresaNotificationModal from "../components/commonComponents/EmpresaNotificationModal";
@@ -278,6 +281,20 @@ const CompanyDashboard = () => {
             onDelete={handleDeleteVacante}
           />
         )}
+
+        {activeView === "tokens" && (
+          <div className={styles.tokensView}>
+            <TokenBalance />
+          </div>
+        )}
+
+        {activeView === "historial" && (
+          <div className={styles.historialView}>
+            <TransactionHistory />
+          </div>
+        )}
+
+        {activeView === "calificar" && <FreelancersRatingView />}
 
         {activeView === "perfil" && (
           <>

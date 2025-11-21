@@ -15,7 +15,7 @@
   justify-content: center;
   min-height: 100vh;
   padding: 3rem 2rem;
-  background: linear-gradient(180deg, #b8f2e6 0%, #7dd3c0 100%);
+  background: transparent;
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -46,7 +46,7 @@
   max-width: 650px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   margin: 0 auto;
 }
 
@@ -200,19 +200,42 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 .ratingValue {
   color: #16685a;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
+}
+
+.starsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .stars {
   color: #f39c12;
-  font-size: 1rem;
+  font-size: 1.2rem;
   letter-spacing: 2px;
+  display: flex;
+  gap: 2px;
+}
+
+.starFilled {
+  color: #ffd700;
+}
+
+.starEmpty {
+  color: #ddd;
+}
+
+.ratingCount {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 /* === LISTA DE PROYECTOS === */
@@ -264,15 +287,72 @@
 }
 
 /* === VISTA DE VACANTES === */
+/* Vista principal de publicar/ver vacantes */
+.publicarView {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+.viewTitle {
+  text-align: center;
+  color: #16685a;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding: 0 2rem;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #16a085;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Contenedor principal de filtros */
+.filtersContainer {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  align-items: center;
+}
+
 .searchContainer {
-  position: absolute;
-  top: 6rem;
-  left: 2rem;
-  right: 2rem;
   display: flex;
   gap: 0.75rem;
-  max-width: 800px;
-  z-index: 10;
+  flex: 1;
+  min-width: 300px;
 }
 
 .searchInput {
@@ -308,9 +388,56 @@
   box-shadow: 0 6px 12px rgba(22, 160, 133, 0.3);
 }
 
+/* Grupo de filtros */
+.filterGroup {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.filterSelect {
+  padding: 0.875rem 1.25rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.filterSelect:hover {
+  border-color: #16a085;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #16a085;
+  box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.1);
+}
+
+/* Botón de limpiar filtros */
+.clearButton {
+  padding: 0.875rem 1.25rem;
+  background: #f0f0f0;
+  color: #555;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.clearButton:hover {
+  background: #e74c3c;
+  color: white;
+  border-color: #e74c3c;
+  transform: translateY(-2px);
+}
+
 .vacanciesGrid {
   position: relative;
-  top: 10rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
@@ -377,7 +504,6 @@
 
 .noVacancies {
   position: relative;
-  top: 10rem;
   text-align: center;
   color: #16685a;
   font-size: 1.2rem;
@@ -387,11 +513,68 @@
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 600px;
-  margin: 0 auto;
+  margin: 2rem auto;
 }
 
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
+  .publicarView {
+    padding: 1rem 0;
+  }
+
+  .viewTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+  }
+
+  /* Filtros responsivos */
+  .filtersContainer {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .searchContainer {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .searchInput {
+    font-size: 0.95rem;
+  }
+
+  .searchButton {
+    padding: 0.875rem 1.25rem;
+  }
+
+  .filterGroup {
+    width: 100%;
+  }
+
+  .filterSelect {
+    width: 100%;
+    min-width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .clearButton {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .vacanciesGrid {
+    grid-template-columns: 1fr;
+    padding: 0 1rem 1rem 1rem;
+    gap: 1rem;
+  }
+
+  .noVacancies {
+    margin: 1rem;
+    font-size: 1rem;
+    padding: 1.5rem;
+  }
+
   .profileSection {
     padding: 2rem 1rem;
     min-height: 100vh;

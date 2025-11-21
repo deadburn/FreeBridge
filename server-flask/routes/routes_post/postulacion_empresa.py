@@ -51,9 +51,12 @@ def postulaciones_empresa(current_user):
                 ),
                 "puesto": freelancer.profesion if freelancer else "No especificado",
                 "rating": 0,  # Por ahora sin rating
-                "avatar": "👤",  # Avatar por defecto
+                "avatar": freelancer.avatar if freelancer else None,
                 "experiencia": freelancer.experiencia if freelancer else "",
                 "hoja_vida": hoja_vida_url,
+                "freelancer": {
+                    "id": freelancer.id_free if freelancer else None,
+                },
                 "vacante": (
                     {
                         "id": vacante.id_vac if vacante else None,

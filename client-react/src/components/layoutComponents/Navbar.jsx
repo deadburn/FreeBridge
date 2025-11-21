@@ -14,7 +14,6 @@ import { FaUser, FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 export default function Navbar() {
   // Obtiene estado y métodos del contexto de autenticación
   const { isAuthenticated, logout, navigateToProfile } = useAuth();
-  const [showMensaje, setShowMensaje] = useState(false);
 
   // Obtiene la ruta actual para determinar si mostrar navbar compacto
   const location = useLocation();

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   MdDashboard,
   MdPostAdd,
@@ -7,6 +7,11 @@ import {
   MdDelete,
   MdFolder,
   MdEdit,
+  MdAccountBalanceWallet,
+  MdHistory,
+  MdMenu,
+  MdClose,
+  MdStar,
 } from "react-icons/md";
 import NotificationButton from "../commonComponents/NotificationButton";
 import styles from "../../styles/modules_dashboards/Sidebar.module.css";
@@ -19,6 +24,7 @@ export default function CompanySidebar({
   notificationCount = 0,
   onNotificationClick,
 }) {
+  const [isOpen, setIsOpen] = useState(false);
   const getLogoDisplay = () => {
     if (!companyData?.logo) {
       return (
@@ -47,83 +53,129 @@ export default function CompanySidebar({
     );
   };
 
+  const handleViewChange = (view) => {
+    onViewChange(view);
+    setIsOpen(false); // Cerrar sidebar al seleccionar una opción
+  };
+
   return (
-    <aside className={styles.sidebar}>
-      <h2 className={styles.sidebarTitle}>Panel de Empresa</h2>
+    <>
+      {/* Botón hamburguesa */}
+      <button
+        className={styles.toggleButton}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle menu"
+      >
+        {isOpen ? <MdClose size={28} /> : <MdMenu size={28} />}
+      </button>
 
-      {/* Logo de la empresa */}
-      <div className={styles.logoContainer}>
-        {getLogoDisplay()}
-        {companyData?.nomb_emp && (
-          <p className={styles.companyName}>{companyData.nomb_emp}</p>
-        )}
-      </div>
+      {/* Overlay para cerrar al hacer clic fuera */}
+      {isOpen && (
+        <div className={styles.overlay} onClick={() => setIsOpen(false)} />
+      )}
 
-      <nav className={styles.nav}>
-        <button
-          className={`${styles.navItem} ${
-            activeView === "perfil" ? styles.navItemActive : ""
-          }`}
-          onClick={() => onViewChange("perfil")}
-        >
-          <MdBusiness className={styles.navIcon} />
-          <span className={styles.navText}>Mi Perfil</span>
-        </button>
+      <aside
+        className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}
+      >
+        <h2 className={styles.sidebarTitle}>Panel de Empresa</h2>
 
-        <button
-          className={`${styles.navItem} ${
-            activeView === "postulaciones" ? styles.navItemActive : ""
-          }`}
-          onClick={() => onViewChange("postulaciones")}
-        >
-          <MdDashboard className={styles.navIcon} />
-          <span className={styles.navText}>Gestión de postulaciones</span>
-        </button>
+        {/* Logo de la empresa */}
+        <div className={styles.logoContainer}>
+          {getLogoDisplay()}
+          {companyData?.nomb_emp && (
+            <p className={styles.companyName}>{companyData.nomb_emp}</p>
+          )}
+        </div>
 
-        <button
-          className={`${styles.navItem} ${
-            activeView === "mis-vacantes" ? styles.navItemActive : ""
-          }`}
-          onClick={() => onViewChange("mis-vacantes")}
-        >
-          <MdWorkOutline className={styles.navIcon} />
-          <span className={styles.navText}>Mis Vacantes</span>
-        </button>
+        <nav className={styles.nav}>
+          <button
+            className={`${styles.navItem} ${
+              activeView === "perfil" ? styles.navItemActive : ""
+            }`}
+            onClick={() => handleViewChange("perfil")}
+          >
+            <MdBusiness className={styles.navIcon} />
+            <span className={styles.navText}>Mi Perfil</span>
+          </button>
 
-        <button
-          className={`${styles.navItem} ${
-            activeView === "publicar" ? styles.navItemActive : ""
-          }`}
-          onClick={() => onViewChange("publicar")}
-        >
-          <MdPostAdd className={styles.navIcon} />
-          <span className={styles.navText}>Publicar vacantes</span>
-        </button>
-      </nav>
+          <button
+            className={`${styles.navItem} ${
+              activeView === "postulaciones" ? styles.navItemActive : ""
+            }`}
+            onClick={() => handleViewChange("postulaciones")}
+          >
+            <MdDashboard className={styles.navIcon} />
+            <span className={styles.navText}>Gestión de postulaciones</span>
+          </button>
 
-      {/* Acciones adicionales */}
-      <div className={styles.sidebarActions}>
-        {onNotificationClick && (
-          <NotificationButton
-            notificationCount={notificationCount}
-            onClick={onNotificationClick}
-          />
-        )}
-        <button
-          className={styles.actionButton}
-          title="Editar perfil"
-          onClick={() => onViewChange("perfil")}
-        >
-          <MdEdit />
-        </button>
-        <button
-          className={styles.actionButton}
-          title="Eliminar cuenta"
-          onClick={onDeleteAccount}
-        >
-          <MdDelete />
-        </button>
-      </div>
-    </aside>
+          <button
+            className={`${styles.navItem} ${
+              activeView === "mis-vacantes" ? styles.navItemActive : ""
+            }`}
+            onClick={() => handleViewChange("mis-vacantes")}
+          >
+            <MdWorkOutline className={styles.navIcon} />
+            <span className={styles.navText}>Mis Vacantes</span>
+          </button>
+
+          <button
+            className={`${styles.navItem} ${
+              activeView === "publicar" ? styles.navItemActive : ""
+            }`}
+            onClick={() => handleViewChange("publicar")}
+          >
+            <MdPostAdd className={styles.navIcon} />
+            <span className={styles.navText}>Publicar vacantes</span>
+          </button>
+
+          <button
+            className={`${styles.navItem} ${
+              activeView === "tokens" ? styles.navItemActive : ""
+            }`}
+            onClick={() => handleViewChange("tokens")}
+          >
+            <MdAccountBalanceWallet className={styles.navIcon} />
+            <span className={styles.navText}>Mis Tokens</span>
+          </button>
+
+          <button
+            className={`${styles.navItem} ${
+              activeView === "historial" ? styles.navItemActive : ""
+            }`}
+            onClick={() => handleViewChange("historial")}
+          >
+            <MdHistory className={styles.navIcon} />
+            <span className={styles.navText}>Historial de Transacciones</span>
+          </button>
+
+          <button
+            className={`${styles.navItem} ${
+              activeView === "calificar" ? styles.navItemActive : ""
+            }`}
+            onClick={() => handleViewChange("calificar")}
+          >
+            <MdStar className={styles.navIcon} />
+            <span className={styles.navText}>Calificar Freelancers</span>
+          </button>
+        </nav>
+
+        {/* Acciones adicionales */}
+        <div className={styles.sidebarActions}>
+          {onNotificationClick && (
+            <NotificationButton
+              notificationCount={notificationCount}
+              onClick={onNotificationClick}
+            />
+          )}
+          <button
+            className={styles.actionButton}
+            title="Eliminar cuenta"
+            onClick={onDeleteAccount}
+          >
+            <MdDelete />
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }

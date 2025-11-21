@@ -5,6 +5,7 @@ import {
   MdAttachMoney,
   MdWork,
   MdBusiness,
+  MdSchedule,
 } from "react-icons/md";
 import styles from "../../styles/modules_modals/VacancyDetailModal.module.css";
 
@@ -14,14 +15,13 @@ export default function VacancyDetailModal({
   onClose,
   onApply,
   canApply,
+  yaPostulado = false,
 }) {
   if (!isOpen || !vacante) return null;
 
   const formatSalary = (salary) => {
     if (!salary) return "No especificado";
-    return new Intl.NumberFormat("es-ES", {
-      style: "currency",
-      currency: "USD",
+    return new Intl.NumberFormat("es-CO", {
       minimumFractionDigits: 0,
     }).format(salary);
   };
@@ -89,6 +89,14 @@ export default function VacancyDetailModal({
             </div>
           )}
 
+          {vacante.duracion_proyecto &&
+            vacante.duracion_proyecto !== "No especificado" && (
+              <div className={styles.infoItem}>
+                <MdSchedule className={styles.icon} />
+                <span>Duración: {vacante.duracion_proyecto}</span>
+              </div>
+            )}
+
           <div className={styles.infoItem}>
             <MdWork className={styles.icon} />
             <span>Publicada: {formatDate(vacante.fecha_publicacion)}</span>
@@ -117,6 +125,14 @@ export default function VacancyDetailModal({
             >
               Postularse a esta vacante
             </button>
+          </div>
+        )}
+
+        {yaPostulado && (
+          <div className={styles.actions}>
+            <div className={styles.alreadyApplied}>
+              Ya te has postulado a esta vacante
+            </div>
           </div>
         )}
       </div>

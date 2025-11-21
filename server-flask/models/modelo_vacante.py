@@ -11,6 +11,7 @@ class Vacante(db.Model):
     descripcion = db.Column(db.Text, nullable=False)
     requisitos = db.Column(db.Text, nullable=False)
     salario = db.Column(db.Numeric(10, 2))
+    duracion_proyecto = db.Column(db.String(50), default="No especificado")
     fecha_publicacion = db.Column(db.DateTime, default=datetime.utcnow)
     estado_vac = db.Column(db.String(20), default="abierta")
 
