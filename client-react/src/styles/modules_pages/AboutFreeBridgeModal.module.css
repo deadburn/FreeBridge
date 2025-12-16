@@ -1,0 +1,266 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modalContent {
+  background: white;
+  border-radius: 12px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-in-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s ease;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  color: #333;
+}
+
+.modalBody {
+  padding: 3rem;
+}
+
+.modalTitle {
+  font-size: 2.5rem;
+  color: #1a1a1a;
+  margin-bottom: 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, #7dd3c0 0%, #5ab8a8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  color: #2a2a2a;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #7dd3c0;
+}
+
+.sectionText {
+  color: #555;
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.targetAudience {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.audienceCard {
+  background: linear-gradient(135deg, #f0f9f7 0%, #e8f5f1 100%);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #7dd3c0;
+}
+
+.audienceCard h3 {
+  color: #2a2a2a;
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.audienceCard p {
+  color: #555;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.valuesList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.valuesList li {
+  padding: 0.75rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: #555;
+  line-height: 1.6;
+}
+
+.valuesList li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #7dd3c0;
+  font-weight: bold;
+}
+
+.valuesList strong {
+  color: #2a2a2a;
+}
+
+.benefitsList {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.benefit {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem;
+  background: #f8f8f8;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.benefit:hover {
+  background: #f0f9f7;
+  transform: translateX(5px);
+}
+
+.benefitIcon {
+  font-size: 1.5rem;
+  color: #7dd3c0;
+  font-weight: bold;
+  min-width: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.benefitText {
+  color: #555;
+  line-height: 1.6;
+}
+
+.ctaSection {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #b8f2e6 0%, #7dd3c0 100%);
+  border-radius: 8px;
+  margin-top: 2rem;
+}
+
+.ctaText {
+  color: #1a1a1a;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.ctaButton {
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ctaButton:hover {
+  background: #333;
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modalBody {
+    padding: 2rem;
+  }
+
+  .modalTitle {
+    font-size: 1.8rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.3rem;
+  }
+
+  .targetAudience {
+    grid-template-columns: 1fr;
+  }
+
+  .modalContent {
+    width: 95%;
+    max-height: 90vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalBody {
+    padding: 1.5rem;
+  }
+
+  .modalTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem;
+  }
+
+  .sectionText {
+    font-size: 0.9rem;
+  }
+
+  .benefitsList {
+    gap: 0.75rem;
+  }
+
+  .benefit {
+    padding: 0.75rem;
+  }
+}

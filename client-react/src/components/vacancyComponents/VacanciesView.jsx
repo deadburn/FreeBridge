@@ -4,6 +4,7 @@ import { postularVacante, verificarPostulacion } from "../../api/postApi";
 import { useAuth } from "../../context/AuthContext";
 import VacancyCard from "./VacancyCard";
 import VacancyDetailModal from "./VacancyDetailModal";
+import AlertModal from "../commonComponents/AlertModal";
 import { MdSearch } from "react-icons/md";
 import styles from "../../styles/modules_dashboards/FreelanceDashboard.module.css";
 
@@ -18,6 +19,14 @@ export default function VacanciesView() {
   const [yaPostulado, setYaPostulado] = useState(false);
   const [verificandoPostulacion, setVerificandoPostulacion] = useState(false);
   const { isAuthenticated, userRole } = useAuth();
+
+  // Estado para el AlertModal
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "info",
+  });
 
   useEffect(() => {
     loadVacancies();
@@ -103,28 +112,53 @@ export default function VacanciesView() {
 
   const handleApply = async (vacante) => {
     if (!isAuthenticated) {
-      alert("Debes iniciar sesión como FreeLancer para postularte");
+      setAlertModal({
+        isOpen: true,
+        title: "No autenticado",
+        message: "Debes iniciar sesión como FreeLancer para postularte",
+        type: "warning",
+      });
       return;
     }
 
     if (userRole !== "FreeLancer") {
-      alert("Solo los FreeLancers pueden postularse a vacantes");
+      setAlertModal({
+        isOpen: true,
+        title: "Tipo de usuario inválido",
+        message: "Solo los FreeLancers pueden postularse a vacantes",
+        type: "warning",
+      });
       return;
     }
 
     try {
       const response = await postularVacante(vacante.id_vac || vacante.id);
-      alert(response.mensaje || "¡Postulación enviada exitosamente!");
+      setAlertModal({
+        isOpen: true,
+        title: "¡Éxito!",
+        message: response.mensaje || "¡Postulación enviada exitosamente!",
+        type: "success",
+      });
       handleCloseModal();
     } catch (error) {
       console.error("Error al postularse:", error);
+      let title = "Error";
+      let message = "Error al enviar la postulación. Intenta nuevamente.";
+
       if (error.response?.status === 409) {
-        alert("Ya te has postulado a esta vacante");
+        title = "Postulación duplicada";
+        message = "Ya te has postulado a esta vacante";
       } else if (error.response?.status === 403) {
-        alert("Solo freelancers pueden postularse a vacantes");
-      } else {
-        alert("Error al enviar la postulación. Intenta nuevamente.");
+        title = "Acceso denegado";
+        message = "Solo freelancers pueden postularse a vacantes";
       }
+
+      setAlertModal({
+        isOpen: true,
+        title,
+        message,
+        type: "error",
+      });
     }
   };
 
@@ -222,6 +256,15 @@ export default function VacanciesView() {
           !verificandoPostulacion
         }
         yaPostulado={yaPostulado}
+      />
+
+      {/* Modal de alertas */}
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => setAlertModal({ ...alertModal, isOpen: false })}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
       />
     </div>
   );

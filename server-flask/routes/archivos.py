@@ -5,12 +5,49 @@ Blueprint para servir archivos estáticos (hojas de vida, avatares, logos)
 import logging
 import os
 from flask import Blueprint, send_from_directory, jsonify
+import mimetypes
 
 logger = logging.getLogger(__name__)
 archivos_bp = Blueprint("archivos", __name__, url_prefix="/api")
 
 # Directorio base donde se almacenan los uploads
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads")
+
+
+@archivos_bp.route("/uploads/<path:filepath>", methods=["GET"])
+def servir_archivo(filepath):
+    """
+    Endpoint genérico para servir archivos de uploads
+    Maneja hojas de vida, avatares, logos, etc.
+    """
+    try:
+        # Convertir barras invertidas a barras normales (Windows compatibility)
+        filepath = filepath.replace("\\", "/")
+
+        # Construir la ruta completa del archivo
+        file_path = os.path.join(UPLOAD_FOLDER, filepath.replace("/", os.sep))
+
+        # Validar que la ruta está dentro de UPLOAD_FOLDER (seguridad)
+        if not os.path.abspath(file_path).startswith(os.path.abspath(UPLOAD_FOLDER)):
+            return jsonify({"error": "Acceso denegado"}), 403
+
+        # Verificar que el archivo existe
+        if not os.path.exists(file_path):
+            return jsonify({"error": "Archivo no encontrado"}), 404
+
+        # Obtener el directorio y nombre del archivo
+        directory = os.path.dirname(file_path)
+        filename = os.path.basename(file_path)
+
+        # Servir el archivo con el tipo MIME correcto
+        return send_from_directory(
+            directory,
+            filename,
+            as_attachment=False,
+        )
+
+    except Exception as e:
+        return jsonify({"error": "Error al cargar el archivo"}), 500
 
 
 @archivos_bp.route("/uploads/hojas_vida/<filename>", methods=["GET"])

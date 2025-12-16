@@ -5,6 +5,7 @@ import {
   calificarFreelancer,
 } from "../../api/ratingApi";
 import RatingModal from "../commonComponents/RatingModal";
+import AlertModal from "../commonComponents/AlertModal";
 import styles from "../../styles/modules_rating/FreelancersRating.module.css";
 
 export default function FreelancersRatingView() {
@@ -12,6 +13,12 @@ export default function FreelancersRatingView() {
   const [loading, setLoading] = useState(true);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [selectedFreelancer, setSelectedFreelancer] = useState(null);
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "info",
+  });
 
   useEffect(() => {
     loadFreelancers();
@@ -39,14 +46,25 @@ export default function FreelancersRatingView() {
   const handleSubmitRating = async (rating, comentario) => {
     try {
       await calificarFreelancer(selectedFreelancer.id_post, rating, comentario);
-      alert("¡Calificación guardada exitosamente!");
+      setAlertModal({
+        isOpen: true,
+        title: "¡Éxito!",
+        message: "¡Calificación guardada exitosamente!",
+        type: "success",
+      });
       setShowRatingModal(false);
       setSelectedFreelancer(null);
       // Recargar la lista
       loadFreelancers();
     } catch (error) {
       console.error("Error al guardar calificación:", error);
-      alert(error.response?.data?.error || "Error al guardar la calificación");
+      setAlertModal({
+        isOpen: true,
+        title: "Error",
+        message:
+          error.response?.data?.error || "Error al guardar la calificación",
+        type: "error",
+      });
     }
   };
 
@@ -72,11 +90,16 @@ export default function FreelancersRatingView() {
         return <MdPerson className={styles.defaultAvatar} />;
       }
       if (freelancer.avatar.startsWith("uploads/")) {
+        // Extraer solo el nombre del archivo (último componente de la ruta)
+        const avatarFilename = freelancer.avatar.split("/").pop();
         return (
           <img
-            src={`/api/${freelancer.avatar}`}
+            src={`/api/uploads/avatares/${avatarFilename}`}
             alt={freelancer.nombre_freelancer}
             className={styles.avatar}
+            onError={(e) => {
+              e.target.style.display = "none";
+            }}
           />
         );
       }
@@ -191,6 +214,15 @@ export default function FreelancersRatingView() {
           vacancyName={selectedFreelancer.vacante.nombre}
         />
       )}
+
+      {/* Modal de alertas */}
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => setAlertModal({ ...alertModal, isOpen: false })}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+      />
     </div>
   );
 }

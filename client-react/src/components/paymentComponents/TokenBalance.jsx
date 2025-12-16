@@ -57,12 +57,12 @@ const TokenBalance = () => {
           <div className={styles.iconWrapper}>
             <MdAccountBalanceWallet className={styles.icon} />
           </div>
-          <h3 className={styles.title}>Balance de Tokens</h3>
+          <h3 className={styles.title}>Balance de FreeCoins</h3>
         </div>
 
         <div className={styles.balanceSection}>
           <div className={styles.mainBalance}>
-            <span className={styles.availableLabel}>Tokens disponibles</span>
+            <span className={styles.availableLabel}>FreeCoins disponibles</span>
             <span
               className={`${styles.tokenCount} ${
                 !hasTokens ? styles.lowTokens : ""
@@ -74,7 +74,7 @@ const TokenBalance = () => {
 
           <div className={styles.stats}>
             <div className={styles.statItem}>
-              <span className={styles.statLabel}>Tokens usados</span>
+              <span className={styles.statLabel}>FreeCoins usados</span>
               <span className={styles.statValue}>{balance.tokens_usados}</span>
             </div>
             <div className={styles.statItem}>
@@ -92,7 +92,7 @@ const TokenBalance = () => {
                 />
               </div>
               <p className={styles.progressText}>
-                {usagePercentage.toFixed(0)}% de tokens utilizados
+                {usagePercentage.toFixed(0)}% de FreeCoins utilizados
               </p>
             </div>
           )}
@@ -101,18 +101,18 @@ const TokenBalance = () => {
         {!hasTokens && (
           <div className={styles.warningBox}>
             <span className={styles.warningIcon}>⚠️</span>
-            <p>No tienes tokens disponibles para publicar vacantes</p>
+            <p>No tienes FreeCoins disponibles para publicar vacantes</p>
           </div>
         )}
 
         <div className={styles.infoSection}>
           <div className={styles.infoItem}>
             <span className={styles.checkIcon}>✓</span>
-            <span>1 token = 1 vacante publicada</span>
+            <span>1 FreeCoin = 1 vacante publicada</span>
           </div>
           <div className={styles.infoItem}>
             <span className={styles.checkIcon}>✓</span>
-            <span>1 token = $12,000 COP (≈ $3 USD)</span>
+            <span>1 FreeCoin = $12,000 COP (≈ $3 USD)</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@ const TokenBalance = () => {
           onClick={() => setShowPurchaseModal(true)}
         >
           <span className={styles.buttonIcon}>🛒</span>
-          Comprar Tokens
+          Comprar FreeCoins
         </button>
       </div>
 

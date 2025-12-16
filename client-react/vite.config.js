@@ -1,7 +1,7 @@
 // https://vite.dev/config/
 export default {
   server: {
-    Proxy: {
+    proxy: {
       "/api": "http://localhost:5000",
     },
   },

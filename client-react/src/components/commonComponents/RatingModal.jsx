@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MdStar, MdStarBorder } from "react-icons/md";
+import AlertModal from "./AlertModal";
 import styles from "../../styles/modules_common/RatingModal.module.css";
 
 export default function RatingModal({
@@ -13,13 +14,24 @@ export default function RatingModal({
   const [hover, setHover] = useState(0);
   const [comentario, setComentario] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "info",
+  });
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (rating === 0) {
-      alert("Por favor selecciona una calificación");
+      setAlertModal({
+        isOpen: true,
+        title: "Validación requerida",
+        message: "Por favor selecciona una calificación",
+        type: "warning",
+      });
       return;
     }
 
@@ -115,6 +127,15 @@ export default function RatingModal({
           </div>
         </form>
       </div>
+
+      {/* Modal de alertas */}
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => setAlertModal({ ...alertModal, isOpen: false })}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+      />
     </div>
   );
 }

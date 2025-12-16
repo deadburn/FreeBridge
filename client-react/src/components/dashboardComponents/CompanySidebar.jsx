@@ -135,7 +135,7 @@ export default function CompanySidebar({
             onClick={() => handleViewChange("tokens")}
           >
             <MdAccountBalanceWallet className={styles.navIcon} />
-            <span className={styles.navText}>Mis Tokens</span>
+            <span className={styles.navText}>Mis FreeCoins</span>
           </button>
 
           <button

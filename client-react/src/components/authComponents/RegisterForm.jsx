@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../api/authApi.js";
 import Modal from "../commonComponents/Modal.jsx";
@@ -12,6 +12,7 @@ export default function RegisterForm() {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -30,6 +31,64 @@ export default function RegisterForm() {
     EMPRESA: "empresa",
   };
   const [rol, setRol] = useState(ROLES.FREELANCER);
+
+  // Dominios genéricos permitidos para freelancers
+  const GENERIC_DOMAINS = [
+    "gmail.com",
+    "outlook.com",
+    "hotmail.com",
+    "yahoo.com",
+    "protonmail.com",
+    "icloud.com",
+    "mail.com",
+    "aol.com",
+  ];
+
+  // Validar email en tiempo real con rol como parámetro
+  const validateEmail = (value, currentRol = rol) => {
+    if (!value) {
+      setEmailError("");
+      return;
+    }
+
+    // Expresión regular para validar formato básico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(value)) {
+      setEmailError("El formato del email no es válido");
+      return;
+    }
+
+    const lowerEmail = value.toLowerCase();
+    const domain = lowerEmail.split("@")[1];
+
+    // Para freelancers: solo dominios genéricos permitidos
+    if (currentRol === ROLES.FREELANCER) {
+      if (!GENERIC_DOMAINS.includes(domain)) {
+        setEmailError(
+          "Para Freelancer, usa un dominio reconocido (gmail, outlook, etc.)"
+        );
+        return;
+      }
+    }
+    // Para empresas: permite dominios propios/personalizados
+    // Solo se valida que tenga formato correcto (ya validado arriba)
+
+    // Si llega aquí, es válido
+    setEmailError("");
+  };
+
+  // Revalidar email cuando el rol cambia
+  useEffect(() => {
+    if (email) {
+      validateEmail(email, rol);
+    }
+  }, [rol]);
+
+  const handleEmailChange = (value) => {
+    setEmail(value);
+    validateEmail(value, rol);
+  };
 
   // Validar coincidencia de contraseñas
   const handlePasswordChange = (value) => {
@@ -56,6 +115,12 @@ export default function RegisterForm() {
     // Validar que se aceptaron los términos
     if (!acceptTerms) {
       alert("Debes aceptar los Términos y Condiciones para continuar");
+      return;
+    }
+
+    // Validar email
+    if (emailError) {
+      alert("Por favor, ingresa un email válido");
       return;
     }
 
@@ -120,9 +185,13 @@ export default function RegisterForm() {
               type="email"
               placeholder="Correo electrónico"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => handleEmailChange(e.target.value)}
+              className={emailError ? styles.inputError : ""}
               required
             />
+            {emailError && (
+              <div className={styles.emailError}>{emailError}</div>
+            )}
 
             {/* Campo de contraseña */}
             <div className={styles.passwordContainer}>
@@ -254,7 +323,19 @@ export default function RegisterForm() {
             </div>
 
             {/* Botón de submit */}
-            <button type="submit" className={styles.submitButton}>
+            <button
+              type="submit"
+              className={styles.submitButton}
+              disabled={
+                emailError ||
+                !passwordsMatch ||
+                !nombre ||
+                !email ||
+                !password ||
+                !confirmPassword ||
+                !acceptTerms
+              }
+            >
               Registrarse
             </button>
           </div>

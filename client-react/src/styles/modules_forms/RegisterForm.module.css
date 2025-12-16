@@ -161,6 +161,25 @@
   font-size: 1rem;
 }
 
+/* Mensaje de error de email */
+.emailError {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: -0.75rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #fee;
+  border-left: 3px solid #e74c3c;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.emailError::before {
+  content: "⚠";
+  font-size: 1rem;
+}
+
 /* Contenedor de opciones de rol */
 .roleContainer {
   display: flex;
@@ -219,6 +238,21 @@
 /* Efecto active en botón */
 .submitButton:active {
   transform: translateY(0);
+}
+
+/* Estado deshabilitado del botón */
+.submitButton:disabled {
+  background-color: #bdc3c7;
+  color: #7f8c8d;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.submitButton:disabled:hover {
+  background-color: #bdc3c7;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Divisor visual para sección de roles */

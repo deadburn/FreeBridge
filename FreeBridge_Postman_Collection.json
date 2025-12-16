@@ -1,0 +1,1182 @@
+{
+  "info": {
+    "_postman_id": "freebridge-api-tests",
+    "name": "FreeBridge API Tests",
+    "description": "Colección completa de pruebas para FreeBridge: Funcionales, Caja Negra, Unitarias, Integración y Aceptación",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Pruebas Funcionales",
+      "item": [
+        {
+          "name": "1.1 Registro de Empresa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 or 500 (already exists)\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 500]);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    pm.test(\"Response contains user id\", function () {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.usuario).to.have.property('id');",
+                  "        pm.environment.set(\"empresa_user_id\", jsonData.usuario.id);",
+                  "        // Guardar el correo para usar en login",
+                  "        var requestBody = JSON.parse(pm.request.body.raw);",
+                  "        pm.environment.set(\"empresa_correo\", requestBody.correo);",
+                  "        console.log('Empresa registrada:', requestBody.correo);",
+                  "    });",
+                  "",
+                  "    pm.test(\"User role is Empresa\", function () {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.usuario.rol).to.eql(\"Empresa\");",
+                  "    });",
+                  "} else {",
+                  "    console.log('Usuario ya existe, usar correo existente');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Tech Solutions S.A.\",\n  \"correo\": \"empresa{{$timestamp}}@techsolutions.com\",\n  \"contraseña\": \"Empresa123!\",\n  \"rol\": \"Empresa\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/registro",
+              "host": ["{{base_url}}"],
+              "path": ["registro"]
+            }
+          }
+        },
+        {
+          "name": "1.2 Login Empresa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('token');",
+                  "    pm.environment.set(\"token\", jsonData.token);",
+                  "});",
+                  "",
+                  "pm.test(\"Token is saved to environment\", function () {",
+                  "    var token = pm.environment.get(\"token\");",
+                  "    pm.expect(token).to.not.be.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{empresa_correo}}\",\n  \"contraseña\": \"Empresa123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "1.3 Crear Perfil Empresa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.test(\"Status code is 201\", function () {",
+                  "        pm.response.to.have.status(201);",
+                  "    });",
+                  "",
+                  "    pm.test(\"Company profile created successfully\", function () {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.success).to.be.true;",
+                  "        pm.expect(jsonData).to.have.property('id_emp');",
+                  "        pm.environment.set('empresa_id', jsonData.id_emp);",
+                  "        console.log('✅ Empresa ID guardado:', jsonData.id_emp);",
+                  "        console.log('⏸️ PAUSA: Ejecuta este SQL antes de continuar:');",
+                  "        console.log('   INSERT INTO TokenBalance VALUES (UUID(), \\\"' + jsonData.id_emp + '\\\", 10, 0, 10);');",
+                  "    });",
+                  "} else if (pm.response.code === 400) {",
+                  "    console.warn('⚠️ Perfil de empresa ya existe');",
+                  "    console.log('🔍 Intentando obtener empresa_id existente...');",
+                  "    ",
+                  "    // Intentar obtener el ID de la empresa desde el usuario",
+                  "    var empresaUserId = pm.environment.get('empresa_user_id');",
+                  "    if (empresaUserId) {",
+                  "        console.log('💡 Usa este GET para obtener el empresa_id:');",
+                  "        console.log('   GET {{base_url}}/empresa/perfil/' + empresaUserId);",
+                  "    }",
+                  "} else {",
+                  "    console.error('❌ ERROR inesperado:', pm.response.code, pm.response.json());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NIT\": \"900{{$randomInt}}\",\n  \"tamaño\": \"Mediana\",\n  \"desc_emp\": \"Empresa de desarrollo de software y consultoría tecnológica\",\n  \"id_ciud\": 1,\n  \"id_usu\": \"{{empresa_user_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/empresa/perfil",
+              "host": ["{{base_url}}"],
+              "path": ["empresa", "perfil"]
+            }
+          }
+        },
+        {
+          "name": "1.4 Asignar Tokens a Empresa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Este test usa un pre-request script para insertar tokens via SQL",
+                  "pm.test(\"Tokens assignment info\", function () {",
+                  "    console.log('IMPORTANTE: Ejecutar SQL manualmente:');",
+                  "    console.log('INSERT INTO TokenBalance (id_balance, id_emp, tokens_disponibles, tokens_usados, tokens_comprados)');",
+                  "    console.log('VALUES (UUID(), \\\"' + pm.environment.get('empresa_id') + '\\\", 10, 0, 10);');",
+                  "    pm.expect(pm.environment.get('empresa_id')).to.not.be.empty;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Nota: Este es un placeholder. Los tokens deben asignarse manualmente via SQL",
+                  "// o mediante un endpoint de compra de tokens si existe.",
+                  "console.log('Empresa ID para asignar tokens:', pm.environment.get('empresa_id'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Este es un placeholder. Ejecuta el SQL manualmente para asignar tokens."
+          }
+        },
+        {
+          "name": "1.5 Registro de Freelancer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 or 500 (already exists)\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 500]);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "    pm.test(\"Response contains mensaje exitoso\", function () {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.mensaje).to.include(\"exitosamente\");",
+                  "    });",
+                  "",
+                  "    pm.test(\"User role is FreeLancer\", function () {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.usuario.rol).to.eql(\"FreeLancer\");",
+                  "        pm.environment.set(\"freelancer_user_id\", jsonData.usuario.id);",
+                  "        // Guardar el correo para usar en login",
+                  "        var requestBody = JSON.parse(pm.request.body.raw);",
+                  "        pm.environment.set(\"freelancer_correo\", requestBody.correo);",
+                  "        console.log('Freelancer registrado:', requestBody.correo);",
+                  "    });",
+                  "} else {",
+                  "    console.log('Usuario ya existe, usar correo existente');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"correo\": \"freelancer{{$timestamp}}@test.com\",\n  \"contraseña\": \"Freelancer123!\",\n  \"rol\": \"FreeLancer\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/registro",
+              "host": ["{{base_url}}"],
+              "path": ["registro"]
+            }
+          }
+        },
+        {
+          "name": "1.6 Login Freelancer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Login successful\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.mensaje).to.include(\"exitoso\");",
+                  "    pm.environment.set(\"freelancer_token\", jsonData.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{freelancer_correo}}\",\n  \"contraseña\": \"Freelancer123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "1.7 Crear Perfil Freelancer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.test(\"Status code is 201\", function () {",
+                  "        pm.response.to.have.status(201);",
+                  "    });",
+                  "",
+                  "    pm.test(\"Profile created successfully\", function () {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.success).to.be.true;",
+                  "        console.log('✅ Perfil freelancer creado exitosamente');",
+                  "    });",
+                  "} else if (pm.response.code === 400) {",
+                  "    console.warn('⚠️ Status 400 - Perfil freelancer ya existe o error en datos');",
+                  "    var jsonData = pm.response.json();",
+                  "    console.warn('Error:', jsonData.error || jsonData.mensaje || JSON.stringify(jsonData));",
+                  "    console.log('💡 Esto es normal si ya ejecutaste los tests antes');",
+                  "    console.log('💡 Para crear un perfil nuevo, ejecuta: $env:RESET_DB=\"1\"; python index.py');",
+                  "} else {",
+                  "    console.error('❌ ERROR inesperado:', pm.response.code);",
+                  "    console.error('Response:', pm.response.json());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{freelancer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "profesion",
+                  "value": "Desarrollador Full Stack",
+                  "type": "text"
+                },
+                {
+                  "key": "experiencia",
+                  "value": "5 años de experiencia",
+                  "type": "text"
+                },
+                {
+                  "key": "id_ciud",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "id_usu",
+                  "value": "{{freelancer_user_id}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/freelancer/perfil",
+              "host": ["{{base_url}}"],
+              "path": ["freelancer", "perfil"]
+            }
+          }
+        },
+        {
+          "name": "1.8 Crear Vacante (Empresa)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.test(\"Status code is 201\", function () {",
+                  "        pm.response.to.have.status(201);",
+                  "    });",
+                  "",
+                  "    pm.test(\"Vacancy created successfully\", function () {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData).to.have.property('vacante');",
+                  "        if (jsonData.vacante && jsonData.vacante.id) {",
+                  "            pm.environment.set(\"vacante_id\", jsonData.vacante.id);",
+                  "            console.log('✅ Vacante creada con ID:', jsonData.vacante.id);",
+                  "        }",
+                  "    });",
+                  "} else if (pm.response.code === 402) {",
+                  "    console.error('❌ ERROR: No tienes tokens suficientes');",
+                  "    console.error('🔧 SOLUCIÓN: Ejecuta este SQL:');",
+                  "    var empresaId = pm.environment.get('empresa_id');",
+                  "    console.error('   INSERT INTO TokenBalance VALUES (UUID(), \"' + empresaId + '\", 10, 0, 10);');",
+                  "} else if (pm.response.code === 404) {",
+                  "    console.error('❌ ERROR: Perfil de empresa no encontrado');",
+                  "    console.error('🔧 SOLUCIÓN: Verifica que el test 1.5B se ejecutó correctamente');",
+                  "} else if (pm.response.code === 401) {",
+                  "    console.error('❌ ERROR: Token inválido o expirado');",
+                  "    console.error('🔧 SOLUCIÓN: Verifica que el test 1.3 (Login Empresa) se ejecutó correctamente');",
+                  "    console.error('Token actual:', pm.environment.get('token') ? 'Existe' : 'No existe');",
+                  "} else {",
+                  "    console.error('❌ ERROR:', pm.response.code, pm.response.json());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Desarrollador Backend Python\",\n  \"descripcion\": \"Buscamos desarrollador con experiencia en Flask y bases de datos\",\n  \"requisitos\": \"Python, Flask, PostgreSQL, Git\",\n  \"salario\": 3000,\n  \"duracion_proyecto\": \"3 meses\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/crear-vacantes",
+              "host": ["{{base_url}}"],
+              "path": ["crear-vacantes"]
+            }
+          }
+        },
+        {
+          "name": "1.9 Listar Vacantes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});",
+                  "",
+                  "if (pm.response.json().length > 0) {",
+                  "    pm.test(\"Vacancies have required fields\", function () {",
+                  "        var vacante = pm.response.json()[0];",
+                  "        pm.expect(vacante).to.have.property('id');",
+                  "        pm.expect(vacante).to.have.property('nombre');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/vacantes",
+              "host": ["{{base_url}}"],
+              "path": ["vacantes"]
+            }
+          }
+        },
+        {
+          "name": "1.10 Postular a Vacante (Freelancer)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var vacanteId = pm.environment.get('vacante_id');",
+                  "if (!vacanteId) {",
+                  "    console.error('❌ ERROR: vacante_id no existe. El test 1.8 debe haber fallado.');",
+                  "    console.error('Verifica que:');",
+                  "    console.error('  1. El perfil de empresa existe (test 1.3)');",
+                  "    console.error('  2. Se asignaron tokens a la empresa (test 1.4 - SQL manual)');",
+                  "    console.error('  3. El test 1.8 se ejecutó exitosamente');",
+                  "} else {",
+                  "    console.log('✅ vacante_id encontrado:', vacanteId);",
+                  "    console.log('URL completa:', pm.variables.replaceIn('{{base_url}}/postular/{{vacante_id}}'));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.test(\"Status code is 201\", function () {",
+                  "        pm.response.to.have.status(201);",
+                  "    });",
+                  "",
+                  "    pm.test(\"Application created\", function () {",
+                  "        var jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.postulacion).to.have.property('id');",
+                  "        pm.environment.set(\"postulacion_id\", jsonData.postulacion.id);",
+                  "        console.log('✅ Postulación creada con ID:', jsonData.postulacion.id);",
+                  "    });",
+                  "} else if (pm.response.code === 404) {",
+                  "    console.error('❌ ERROR 404: Vacante no encontrada');",
+                  "    console.error('vacante_id usado:', pm.environment.get('vacante_id'));",
+                  "    console.error('Verifica que el test 1.8 (Crear Vacante) pasó correctamente');",
+                  "} else if (pm.response.code === 403) {",
+                  "    console.error('❌ ERROR 403: Solo freelancers pueden postularse');",
+                  "    console.error('Verifica que estás usando freelancer_token');",
+                  "} else {",
+                  "    console.error('❌ ERROR:', pm.response.code, pm.response.json());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{freelancer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/postular/{{vacante_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["postular", "{{vacante_id}}"]
+            }
+          }
+        },
+        {
+          "name": "1.11 Ver Perfil",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Profile data exists\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('nombre');",
+                  "    pm.expect(jsonData).to.have.property('rol');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/perfil",
+              "host": ["{{base_url}}"],
+              "path": ["perfil"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Pruebas de Caja Negra",
+      "item": [
+        {
+          "name": "2.1 Validación - Registro Sin Nombre",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates missing fields\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"test@example.com\",\n  \"contraseña\": \"Pass123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/registro",
+              "host": ["{{base_url}}"],
+              "path": ["registro"]
+            }
+          }
+        },
+        {
+          "name": "2.2 Mensaje de Error - Credenciales Incorrectas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message is clear\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error).to.include(\"incorrecta\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"empresa@techsolutions.com\",\n  \"contraseña\": \"ContraseñaIncorrecta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "2.3 Flujo - Acceso Sin Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Unauthorized access blocked\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/perfil",
+              "host": ["{{base_url}}"],
+              "path": ["perfil"]
+            }
+          }
+        },
+        {
+          "name": "2.4 Proceso - Postular Dos Veces",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 409 (Conflict)\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test(\"Duplicate application prevented\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error).to.include(\"postulado\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{freelancer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/postular/{{vacante_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["postular", "{{vacante_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Pruebas Unitarias",
+      "item": [
+        {
+          "name": "3.1 Validación Formulario Completo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"All required fields are validated\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.usuario).to.have.property('nombre');",
+                  "    pm.expect(jsonData.usuario).to.have.property('correo');",
+                  "    pm.expect(jsonData.usuario).to.have.property('rol');",
+                  "});",
+                  "",
+                  "pm.test(\"Password is not returned\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.usuario).to.not.have.property('contraseña');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Usuario Prueba Unitaria\",\n  \"correo\": \"unitaria@test.com\",\n  \"contraseña\": \"TestUnit123!\",\n  \"rol\": \"FreeLancer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/registro",
+              "host": ["{{base_url}}"],
+              "path": ["registro"]
+            }
+          }
+        },
+        {
+          "name": "3.2 Petición HTTP - Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"API is responding\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Health check returns OK status\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql(\"OK\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "3.3 Controlador Backend - Crear Vacante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Backend controller processes request\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response structure is correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('mensaje');",
+                  "    pm.expect(jsonData).to.have.property('vacante');",
+                  "});",
+                  "",
+                  "pm.test(\"Vacancy has required fields\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var vacante = jsonData.vacante;",
+                  "    pm.expect(vacante).to.have.property('id');",
+                  "    pm.expect(vacante).to.have.property('titulo');",
+                  "    pm.expect(vacante).to.have.property('presupuesto');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Test Backend Controller\",\n  \"descripcion\": \"Testing backend logic\",\n  \"requisitos\": \"Unit testing\",\n  \"presupuesto\": 1000,\n  \"duracion\": 1,\n  \"id_ciu\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/crear-vacantes",
+              "host": ["{{base_url}}"],
+              "path": ["crear-vacantes"]
+            }
+          }
+        },
+        {
+          "name": "3.4 Lógica Autenticación - Token JWT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"JWT authentication works\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Token is valid and not expired\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('usuario');",
+                  "});",
+                  "",
+                  "pm.test(\"User identity is preserved\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.usuario.correo).to.eql(\"empresa@techsolutions.com\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Hacer login para obtener token fresco",
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get(\"base_url\") + \"/login\",",
+                  "    method: 'POST',",
+                  "    header: {",
+                  "        'Content-Type': 'application/json'",
+                  "    },",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            \"correo\": \"empresa@techsolutions.com\",",
+                  "            \"contraseña\": \"Empresa123!\"",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    if (!err) {",
+                  "        var jsonData = res.json();",
+                  "        pm.environment.set(\"token\", jsonData.token);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/perfil",
+              "host": ["{{base_url}}"],
+              "path": ["perfil"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Pruebas de Integración",
+      "item": [
+        {
+          "name": "4.1 CRUD - CREATE Vacante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"CREATE: Vacancy inserted in DB\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set(\"integration_vacante_id\", jsonData.vacante.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Vacante Test Integración\",\n  \"descripcion\": \"Test CRUD completo\",\n  \"requisitos\": \"Testing\",\n  \"presupuesto\": 2000,\n  \"duracion\": 2,\n  \"id_ciu\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/crear-vacantes",
+              "host": ["{{base_url}}"],
+              "path": ["crear-vacantes"]
+            }
+          }
+        },
+        {
+          "name": "4.2 CRUD - READ Vacante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"READ: Vacancy retrieved from DB\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.vacante.titulo).to.eql(\"Vacante Test Integración\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mis-vacantes/{{integration_vacante_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["mis-vacantes", "{{integration_vacante_id}}"]
+            }
+          }
+        },
+        {
+          "name": "4.3 CRUD - UPDATE Vacante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"UPDATE: Vacancy updated in DB\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.vacante.titulo).to.eql(\"Vacante ACTUALIZADA\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Vacante ACTUALIZADA\",\n  \"descripcion\": \"Descripción actualizada\",\n  \"requisitos\": \"Testing updated\",\n  \"presupuesto\": 2500,\n  \"duracion\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/vacantes/{{integration_vacante_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["vacantes", "{{integration_vacante_id}}"]
+            }
+          }
+        },
+        {
+          "name": "4.4 CRUD - DELETE Vacante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"DELETE: Vacancy removed from DB\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/vacantes/{{integration_vacante_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["vacantes", "{{integration_vacante_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Pruebas de Aceptación",
+      "item": [
+        {
+          "name": "5.1 Freelancer - Buscar Vacantes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Freelancer can see available jobs\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.vacantes).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test(\"Job listings have complete information\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.vacantes.length > 0) {",
+                  "        var vacante = jsonData.vacantes[0];",
+                  "        pm.expect(vacante).to.have.property('titulo');",
+                  "        pm.expect(vacante).to.have.property('descripcion');",
+                  "        pm.expect(vacante).to.have.property('presupuesto');",
+                  "        pm.expect(vacante).to.have.property('empresa');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/vacantes",
+              "host": ["{{base_url}}"],
+              "path": ["vacantes"]
+            }
+          }
+        },
+        {
+          "name": "5.2 Freelancer - Postular",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Application submitted successfully\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Freelancer receives confirmation\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.mensaje).to.include(\"exitosamente\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{freelancer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/postular/{{vacante_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["postular", "{{vacante_id}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

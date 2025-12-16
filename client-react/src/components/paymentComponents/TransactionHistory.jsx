@@ -71,13 +71,13 @@ const TransactionHistory = () => {
   const getTransactionLabel = (tipo) => {
     switch (tipo) {
       case "compra":
-        return "Compra de tokens";
+        return "Compra de FreeCoins";
       case "uso":
         return "Publicación de vacante";
       case "reembolso":
         return "Reembolso";
       case "inicial":
-        return "Tokens de bienvenida";
+        return "FreeCoins de bienvenida";
       default:
         return "Transacción";
     }
@@ -130,7 +130,7 @@ const TransactionHistory = () => {
           <span className={styles.emptyIcon}>📭</span>
           <p>No hay transacciones registradas</p>
           <span className={styles.emptySubtext}>
-            Aquí aparecerán tus compras y uso de tokens
+            Aquí aparecerán tus compras y uso de FreeCoins
           </span>
         </div>
       ) : (
@@ -153,7 +153,7 @@ const TransactionHistory = () => {
                   </span>
                   <span className={styles.transactionTokens}>
                     {transaction.tipo === "uso" ? "-" : "+"}
-                    {transaction.cantidad_tokens} token
+                    {transaction.cantidad_tokens} FreeCoin
                     {transaction.cantidad_tokens !== 1 ? "s" : ""}
                   </span>
                 </div>

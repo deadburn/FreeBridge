@@ -25,9 +25,10 @@ def obtener_perfil(current_user):
             }
         elif current_user.rol == "Empresa" and current_user.empresa:
             perfil["empresa"] = {
-                "nombre": current_user.empresa.nomb_emp,
+                "nombre": current_user.nombre,  # El nombre viene del usuario, no de empresa
                 "nit": current_user.empresa.NIT,
                 "tamaño": current_user.empresa.tamaño,
+                "descripcion": current_user.empresa.desc_emp,
             }
 
         return jsonify(perfil), 200

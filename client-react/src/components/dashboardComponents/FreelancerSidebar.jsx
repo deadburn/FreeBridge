@@ -66,16 +66,28 @@ export default function FreelancerSidebar({
       }
       // Si es una imagen subida
       if (avatarUrl.startsWith("uploads/")) {
+        // Extraer solo el nombre del archivo si viene con ruta completa
+        const avatarFilename = avatarUrl.includes("/")
+          ? avatarUrl.split("/").pop()
+          : avatarUrl;
+        const imageUrl = `http://localhost:5000/api/uploads/avatares/${avatarFilename}?t=${Date.now()}`;
         return (
           <img
             key={avatarUrl}
-            src={`/api/${avatarUrl}?t=${Date.now()}`}
+            src={imageUrl}
             alt="Avatar"
+            onError={(e) => {
+              e.target.style.display = "none";
+            }}
+            onLoad={(e) => {
+              console.log("Imagen cargada exitosamente:", imageUrl);
+            }}
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         );
       }
     }
+    console.log("No hay avatar URL, mostrando icono por defecto");
     // Fallback a icono
     return <MdPerson size={48} />;
   };

@@ -53,14 +53,14 @@ function CheckoutForm({
       // Confirmar el pago en el backend
       try {
         await confirmPayment(paymentIntent.id);
-        setMessage("¡Pago exitoso! Tus tokens han sido acreditados.");
+        setMessage("¡Pago exitoso! Tus FreeCoins han sido acreditados.");
         setTimeout(() => {
           onSuccess();
         }, 2000);
       } catch (error) {
         console.error("Error confirmando pago:", error);
         setMessage(
-          "Pago exitoso pero hubo un error al acreditar tokens. Contáctanos."
+          "Pago exitoso pero hubo un error al acreditar FreeCoins. Contáctanos."
         );
         setIsLoading(false);
       }
@@ -72,7 +72,7 @@ function CheckoutForm({
       <div className={styles.paymentInfo}>
         <h3>Resumen de compra</h3>
         <div className={styles.summaryRow}>
-          <span>Cantidad de tokens:</span>
+          <span>Cantidad de FreeCoins:</span>
           <strong>{cantidadTokens}</strong>
         </div>
         <div className={styles.summaryRow}>
@@ -80,7 +80,7 @@ function CheckoutForm({
           <strong>${monto.toLocaleString()} COP</strong>
         </div>
         <p className={styles.infoText}>
-          Cada token te permite publicar 1 vacante
+          Cada FreeCoin te permite publicar 1 vacante
         </p>
       </div>
 
@@ -158,7 +158,7 @@ export default function TokenPurchase({ onClose, onSuccess }) {
   const handleContinue = async () => {
     const cantidad = parseInt(cantidadTokens) || 0;
     if (cantidad < 1 || cantidad > 100) {
-      alert("Cantidad de tokens inválida (1-100)");
+      alert("Cantidad de FreeCoins inválida (1-100)");
       return;
     }
 
@@ -194,23 +194,23 @@ export default function TokenPurchase({ onClose, onSuccess }) {
 
           <div className={styles.header}>
             <MdShoppingCart className={styles.headerIcon} />
-            <h2>Comprar Tokens</h2>
+            <h2>Comprar FreeCoins</h2>
           </div>
 
           {balance && (
             <div className={styles.balanceInfo}>
               <p>
-                Tokens disponibles:{" "}
+                FreeCoins disponibles:{" "}
                 <strong>{balance.tokens_disponibles}</strong>
               </p>
               <p className={styles.subtext}>
-                Tokens usados: {balance.tokens_usados}
+                FreeCoins usados: {balance.tokens_usados}
               </p>
             </div>
           )}
 
           <div className={styles.selectSection}>
-            <label htmlFor="cantidad">¿Cuántos tokens deseas comprar?</label>
+            <label htmlFor="cantidad">¿Cuántos FreeCoins deseas comprar?</label>
             <input
               type="number"
               id="cantidad"
@@ -238,7 +238,7 @@ export default function TokenPurchase({ onClose, onSuccess }) {
 
             <div className={styles.priceInfo}>
               <p>
-                Precio: <strong>$12,000 COP</strong> por token
+                Precio: <strong>$12,000 COP</strong> por FreeCoin
               </p>
               <p>
                 Total:{" "}
@@ -255,9 +255,11 @@ export default function TokenPurchase({ onClose, onSuccess }) {
               <MdCheck className={styles.checkIcon} />
               <div>
                 <p>
-                  <strong>¿Qué son los tokens?</strong>
+                  <strong>¿Qué son los FreeCoins?</strong>
                 </p>
-                <p>Cada token te permite publicar una vacante en FreeBridge.</p>
+                <p>
+                  Cada FreeCoin te permite publicar una vacante en FreeBridge.
+                </p>
               </div>
             </div>
 

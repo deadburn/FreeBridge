@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { verificarPostulacion } from "../../api/postApi";
+import AlertModal from "../commonComponents/AlertModal";
 import { MdAttachMoney } from "react-icons/md";
 import styles from "../../styles/modules_vacancies/VacancyCard.module.css";
 
@@ -37,6 +38,12 @@ export default function VacancyCard({
   const { isAuthenticated, userRole } = useAuth();
   const [yaPostulado, setYaPostulado] = useState(false);
   const [verificando, setVerificando] = useState(true);
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "info",
+  });
 
   // Verificar si el freelancer ya se postuló a esta vacante
   useEffect(() => {
@@ -66,13 +73,23 @@ export default function VacancyCard({
 
     // Verificar que esté autenticado
     if (!isAuthenticated) {
-      alert("Debes iniciar sesión como FreeLancer para postularte");
+      setAlertModal({
+        isOpen: true,
+        title: "No autenticado",
+        message: "Debes iniciar sesión como FreeLancer para postularte",
+        type: "warning",
+      });
       return;
     }
 
     // Verificar que sea FreeLancer
     if (userRole !== "FreeLancer") {
-      alert("Solo los FreeLancers pueden postularse a vacantes");
+      setAlertModal({
+        isOpen: true,
+        title: "Tipo de usuario inválido",
+        message: "Solo los FreeLancers pueden postularse a vacantes",
+        type: "warning",
+      });
       return;
     }
 
@@ -220,6 +237,15 @@ export default function VacancyCard({
           </button>
         )}
       </div>
+
+      {/* Modal de alertas */}
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => setAlertModal({ ...alertModal, isOpen: false })}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+      />
     </div>
   );
 }

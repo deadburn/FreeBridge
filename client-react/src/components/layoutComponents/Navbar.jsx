@@ -9,82 +9,115 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import styles from "../../styles/modules_pages/Navbar.module.css";
-import { FaUser, FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
+import {
+  FaThLarge,
+  FaSignInAlt,
+  FaSignOutAlt,
+  FaUserPlus,
+  FaQuestionCircle,
+} from "react-icons/fa";
+import AboutFreeBridgeModal from "./AboutFreeBridgeModal";
 
 export default function Navbar() {
   // Obtiene estado y métodos del contexto de autenticación
   const { isAuthenticated, logout, navigateToProfile } = useAuth();
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
   // Obtiene la ruta actual para determinar si mostrar navbar compacto
   const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
 
   return (
-    <nav
-      className={`${styles.navbar} ${!isHomePage ? styles.navbarCompact : ""}`}
-    >
-      {/* Logo FreeBridge con imagen */}
-      <div className={styles.logo}>
-        <Link to="/" title="FreeBridge">
-          <img src="/src/assets/freebridge.svg" alt="FreeBridge Logo" />
-        </Link>
-      </div>
+    <>
+      <nav
+        className={`${styles.navbar} ${
+          !isHomePage ? styles.navbarCompact : ""
+        }`}
+      >
+        {/* Logo FreeBridge con imagen */}
+        <div className={styles.logo}>
+          <Link to="/" title="FreeBridge">
+            <img src="/src/assets/freebridge.svg" alt="FreeBridge Logo" />
+          </Link>
+        </div>
 
-      {/* Contenedor de enlaces de navegación */}
-      <div className={styles.navLinks}>
-        {/* Renderizado condicional según estado de autenticación */}
-        {!isAuthenticated ? (
-          <>
-            <Link to="/login" title="Iniciar Sesión">
-              {isHomePage ? (
-                "Iniciar Sesión"
-              ) : (
-                <span className={styles.icon}>
-                  <FaSignInAlt />
-                </span>
-              )}
-            </Link>
-            <Link to="/register" title="Registrarse">
-              {isHomePage ? (
-                "Registrarse"
-              ) : (
-                <span className={styles.icon}>
-                  <FaUserPlus />
-                </span>
-              )}
-            </Link>
-          </>
-        ) : (
-          <>
+        {/* Centro de la navbar: contiene el botón About centrado */}
+        <div className={styles.navCenter}>
+          {isHomePage && (
             <button
-              onClick={navigateToProfile}
+              onClick={() => setIsAboutModalOpen(true)}
               className={styles.navLink}
-              title="Perfil"
+              title="¿Por qué FreeBridge?"
             >
-              {isHomePage ? (
-                "Perfil"
-              ) : (
-                <span className={styles.icon}>
-                  <FaUser />
-                </span>
-              )}
+              <span className={styles.aboutButton}>
+                <FaQuestionCircle /> ¿Por qué FreeBridge?
+              </span>
             </button>
-            <button
-              onClick={() => logout(true)}
-              className={styles.navLink}
-              title="Cerrar Sesión"
-            >
-              {isHomePage ? (
-                "Cerrar Sesión"
-              ) : (
-                <span className={styles.icon}>
-                  <FaSignOutAlt />
-                </span>
-              )}
-            </button>
-          </>
-        )}
-      </div>
-    </nav>
+          )}
+        </div>
+
+        {/* Contenedor de enlaces de navegación */}
+        <div className={styles.navLinks}>
+          {/* Renderizado condicional según estado de autenticación */}
+          {!isAuthenticated ? (
+            <>
+              <Link to="/login" title="Iniciar Sesión">
+                {isHomePage ? (
+                  "Iniciar Sesión"
+                ) : (
+                  <span className={styles.icon}>
+                    <FaSignInAlt />
+                  </span>
+                )}
+              </Link>
+              <Link to="/register" title="Registrarse">
+                {isHomePage ? (
+                  "Registrarse"
+                ) : (
+                  <span className={styles.icon}>
+                    <FaUserPlus />
+                  </span>
+                )}
+              </Link>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={navigateToProfile}
+                className={styles.navLink}
+                title="Dashboard"
+              >
+                {isHomePage ? (
+                  "Dashboard"
+                ) : (
+                  <span className={styles.icon}>
+                    <FaThLarge />
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => logout(true)}
+                className={styles.navLink}
+                title="Cerrar Sesión"
+              >
+                {isHomePage ? (
+                  "Cerrar Sesión"
+                ) : (
+                  <span className={styles.icon}>
+                    <FaSignOutAlt />
+                  </span>
+                )}
+              </button>
+            </>
+          )}
+        </div>
+      </nav>
+
+      {/* Modal de información sobre FreeBridge */}
+      <AboutFreeBridgeModal
+        isOpen={isAboutModalOpen}
+        onClose={() => setIsAboutModalOpen(false)}
+      />
+    </>
   );
 }

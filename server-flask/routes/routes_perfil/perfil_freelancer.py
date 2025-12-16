@@ -13,9 +13,15 @@ AVATAR_FOLDER = "uploads/avatares"
 ALLOWED_EXTENSIONS = {"pdf"}
 ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
-# Crear carpetas si no existen
+# Crear carpetas si no existen - usar rutas absolutas
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(AVATAR_FOLDER, exist_ok=True)
+
+# Logging
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def allowed_file(filename):
@@ -154,6 +160,7 @@ def actualizar_perfil_freelancer(id_free):
         # Manejar avatar
         if "avatar" in request.files:
             file = request.files["avatar"]
+
             if file and file.filename and allowed_image(file.filename):
                 # Eliminar avatar anterior si existe y no es un avatar por defecto
                 if freelancer.avatar and os.path.exists(freelancer.avatar):
@@ -167,10 +174,25 @@ def actualizar_perfil_freelancer(id_free):
                 unique_filename = (
                     f"avatar_{freelancer.id_usu}_{uuid.uuid4().hex[:8]}_{filename}"
                 )
-                filepath = os.path.join(AVATAR_FOLDER, unique_filename)
+
+                # Crear ruta absoluta para guardar el archivo
+                avatar_dir = os.path.join(os.getcwd(), AVATAR_FOLDER)
+                os.makedirs(avatar_dir, exist_ok=True)
+
+                filepath = os.path.join(avatar_dir, unique_filename)
+
+                # Guardar el archivo
                 file.save(filepath)
-                freelancer.avatar = filepath
-        elif request.form.get("avatar_default"):
+
+                # Verificar que se guardó
+                if os.path.exists(filepath):
+                    # Guardar en BD la ruta relativa con barras normales
+                    relative_path = f"{AVATAR_FOLDER}/{unique_filename}".replace(
+                        "\\", "/"
+                    )
+                    freelancer.avatar = relative_path
+
+        if request.form.get("avatar_default"):
             # Si se seleccionó un avatar por defecto
             freelancer.avatar = request.form.get("avatar_default")
 
